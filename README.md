@@ -13,7 +13,7 @@ Install:
 $ pip install python-parallel
 ```
 
-_Parallalize_:
+_Parallelize_:
 
 ```python
 @parallel.decorate
@@ -29,7 +29,44 @@ results = download_and_store.map([
 ], timeout=5, max_workers=4)
 ```
 
+There are more features to `parallel`:
+* Advanced argument passing (named arguments, extras).
+* Failed tasks and a silent mode.
+* An Async API (with context managers).
+* Automatic retries
+* Choose between multithreading and multiprocessing with a simple attribute `thread` & `process`.
+
 Check the docs at [https://python-parallel.readthedocs.io/en/latest/](https://python-parallel.readthedocs.io/en/latest/).
+
+## Quick Docs
+
+`parallel` simplifies the process of _parallelizing_ tasks in your python code. Sometimes, you have a function that you want to invoke multiple times in parallel with different arguments (as the example above).
+
+In some other occasions, you want to execute multiple functions in parallel. Example:
+
+```python
+@parallel.decorated
+def get_price_bitstamp(crypto):
+    pass
+
+@parallel.decorated
+def get_price_bitfinex(crypto):
+    pass
+
+@parallel.decorated
+def get_price_coinbase(crypto):
+    pass
+
+prices = parallel.par({
+    'stamp': get_price_bitstamp.future(crypto='BTC'),
+    'finex': get_price_bitfinex.future(crypto='BTC'),
+    'base': get_price_coinbase.future(crypto='BTC'),
+})
+
+# prices is a dict-like structure
+print("Price of Bitstamp: {}".format(prices['stamp']))
+print("Price of Coinbase: {}".format(prices['base']))
+```
 
 ## Contributing
 
