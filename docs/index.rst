@@ -13,11 +13,14 @@ Release v\ |version|.
 
   Parallel is in early stage and your input is highly appreciated.
 
-  Questions or ideas? Create `an issue <http://www.python.org/>`_.
+  Questions or ideas? Create `an issue <https://github.com/santiagobasulto/parallel/issues>`_.
 
-`parallel` makes the process of writing parallel code simple and ejoyable, bringing parallelism **closer to humans**. `parallel` is NOT a pipeline library (check `Dask <https://dask.org/>`_ or `joblib <https://joblib.readthedocs.io/en/latest/>`_ for that).
+`parallel` makes the process of writing parallel code simple and enjoyable,
+bringing parallelism **closer to humans**. `parallel` is **NOT** a pipeline library (check `Dask <https://dask.org/>`_ or
+`Luigi <https://github.com/spotify/luigi>`_ for that).
 
-`parallel` is inspired (and perfectly summarized) by `Scala's parallel collections <https://docs.scala-lang.org/overviews/parallel-collections/overview.html>`_:
+`parallel` is inspired (and perfectly summarized) by
+`Scala's parallel collections <https://docs.scala-lang.org/overviews/parallel-collections/overview.html>`_:
 
   An effort to facilitate parallel programming by
   *sparing users from low-level parallelization details*, meanwhile providing
