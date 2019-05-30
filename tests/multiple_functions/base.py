@@ -54,11 +54,11 @@ def power(x, power=2, sleep=0.1):
 
 @parallel.decorate
 def error_function_decorated(param):
-    raise TestingException(f"Error: {param}")
+    raise TestingException("Error: {}".format(param))
 
 
 def error_function(param):
-    raise TestingException(f"Error: {param}")
+    raise TestingException("Error: {}".format(param))
 
 
 class BaseSameFunctionParallelTestInvokationTestCase:

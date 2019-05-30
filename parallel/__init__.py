@@ -28,7 +28,8 @@ class FailedTask:
         )
 
     def __repr__(self):
-        return "FailedTask(params={self.params}, kwargs={self.kwargs}, ex={self.ex.__class__})".format()
+        return "FailedTask(params={}, kwargs={}, ex={})".format(
+            self.params, self.kwargs, self.ex.__class__)
 
 
 class ParallelJob:
