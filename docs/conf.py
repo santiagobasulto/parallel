@@ -20,7 +20,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'Parallel'
-copyright = '2018, Santiago Basulto'
+copyright = '2019, Santiago Basulto'
 author = 'Santiago Basulto'
 
 # The short X.Y version

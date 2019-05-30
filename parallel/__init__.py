@@ -5,6 +5,9 @@ from . import exceptions
 
 __all__ = ["decorate", "arg", "future", "map", "async_map", "par", "async_par"]
 
+__version__ = '0.0.1'
+__author__ = 'Santiago Basulto <santiago.basulto@gmail.com>'
+
 THREAD = "thread"
 PROCESS = "process"
 
@@ -25,7 +28,7 @@ class FailedTask:
         )
 
     def __repr__(self):
-        return f"FailedTask(params={self.params}, kwargs={self.kwargs}, ex={self.ex.__class__})"
+        return "FailedTask(params={self.params}, kwargs={self.kwargs}, ex={self.ex.__class__})".format()
 
 
 class ParallelJob:
