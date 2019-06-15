@@ -467,3 +467,25 @@ class TestOptions(BaseSameFunctionParallelOtherOptionsTestCase):
         ], max_workers=1)
 
         assert results == ['a', 'b', 'c']
+
+
+class TestRegressions:
+    def test_parameter_out_of_order_with_extras(self):
+        @parallel.decorate
+        def sleep_return(p1, p2, p3, sleep):
+            time.sleep(sleep)
+            return p1 + p2 + p3
+
+        results = sleep_return.map([
+            ({'p3': 'Z', 'sleep': .2}),
+            ({'p3': 'R', 'sleep': .3}),
+            ({'p3': 'Q', 'sleep': .1}),
+        ], extras={
+            'p1': 'X',
+            'p2': 'Y',
+        })
+        assert results == [
+            'XYZ',
+            'XYR',
+            'XYQ',
+        ]

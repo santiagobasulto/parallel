@@ -68,3 +68,17 @@ def test_thread_executor_diff_fn_dict():
     )
 
     assert ex.results() == {"r1": "0.3", "r2": "0.1 - 0.2"}
+
+
+def test_normalize():
+    job = parallel.ParallelJob.normalize(
+        'j1', sleep_return,
+        {'p3': 'R', 'sleep': 0.3},
+        extras={'p1': 'X', 'p2': 'Y'})
+    assert job.args == tuple()
+    assert job.kwargs == {
+        'p1': 'X',
+        'p2': 'Y',
+        'p3': 'R',
+        'sleep': 0.3
+    }

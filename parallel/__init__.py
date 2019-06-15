@@ -65,7 +65,7 @@ class ParallelJob:
                     args.append(param)
             return cls(name, fn, *args, **kwargs)
         if isinstance(params, dict):
-            return cls(name, fn, **params)
+            return cls(name, fn, **{**params, **kwargs})
         return cls(name, fn, params)
 
 
