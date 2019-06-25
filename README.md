@@ -3,7 +3,7 @@
 > Bringing _parallelism_ closer to humans ✨
 
 
-**Important**: `parallel` is in an early stage. All questions and suggestions are welcome. Please [submit an issue](https://github.com/santiagobasulto/parallel/issues).
+**Important**: `parallel` is in an early stage. All questions and suggestions are welcome. Check the section [#Contributing](#Contributing) below or [submit an issue](https://github.com/santiagobasulto/parallel/issues).
 
 ### Getting started
 
@@ -70,14 +70,19 @@ print("Price of Coinbase: {}".format(prices['base']))
 
 ## Contributing
 
-Run tests
+Parallel is in very early stage. It's an effort to conceptualize the requirements that I've had throughout the years when writing parallel code. Simplicity has been my main motivation when writing the library, keeping it simple for the user to use and readable once the code has been written.
+
+Your comments and suggestions are greatly appreciated. If you think that any use case has been missing, or we should improve the API in any way, please [submit an issue](https://github.com/santiagobasulto/parallel/issues).
+
+Parallel is fairly well tested. To run those tests use:
 
 ```bash
 $ pip install -r dev-requirements.txt
 $ py.test -n 4 tests/
 ```
 
-Write & build docs:
+Documentation is written using Sphinx, the following command builds them live:
+
 ```bash
 $ python docs/live_docs.py
 ```
