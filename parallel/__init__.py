@@ -5,7 +5,7 @@ from . import exceptions
 
 __all__ = ["decorate", "arg", "future", "map", "async_map", "par", "async_par"]
 
-__version__ = '0.0.1'
+__version__ = '0.0.2'
 __author__ = 'Santiago Basulto <santiago.basulto@gmail.com>'
 
 THREAD = "thread"
