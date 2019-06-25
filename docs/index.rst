@@ -44,15 +44,27 @@ amazing simplicity::
         'https://python-requests.com',
         'https://rmotr.com'
     ]
-    # instant parallelism (Threads using by default)
+    # instant parallelism (Threads used by default)
     results = download_and_store.map(urls, timeout=5, max_workers=4)
 
-    # using multithreading
+Parallel includes a simple way to switch between
+multithreading and multiprocessing::
+
+    # Using the default executor (thread)
+    # (can be configured when writing the function)
+    results = download_and_store.map(urls)
+
+    # Add `.thread` to use multithreading
     results = download_and_store.thread.map(urls)
 
-    # using multiprocessing
+    # Add `.process` to use multiprocessing
     results = download_and_store.process.map(urls)
 
+**Warning:** Multiprocessing support is in alpha stage. I had to rewrite a
+module similar to `concurrent.futures` because pickling doesn't work with
+decorated functions.
+
+Decorating your function won't affect its regular behavior.
 The decorated function can still be used normally::
 
     res = download_and_store('https://rmotr.com')
@@ -85,7 +97,7 @@ Parallel also includes a non Blocking API, with similar simplicity::
 Parallelizing Multiple functions
 ------------------------------------
 
-Parallel can also be used to run **different functions** in parallel,
+Parallel can also be used to run multiple **different functions** in parallel,
 with advanced argument passing and a simplified API::
 
     @parallel.decorate
