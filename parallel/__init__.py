@@ -1,6 +1,7 @@
 import functools
 import collections
 import concurrent.futures as cf
+from . import errors
 from . import exceptions
 
 __all__ = ["decorate", "arg", "future", "map", "async_map", "par", "async_par"]
@@ -202,8 +203,7 @@ class ThreadExecutor(BaseParallelExecutor):
 
 class ProcessExecutor(BaseParallelExecutor):
     def _get_executor_class(self):
-        # return cf.ProcessPoolExecutor
-        return cf.ThreadPoolExecutor
+        return cf.ProcessPoolExecutor
 
 
 class ParallelProxy:
@@ -273,6 +273,8 @@ class ParallelProxy:
         silent=False,
         unpack_arguments=True,
     ):
+        if hasattr(self, '__decorated') and self.ExecutorClass == ProcessExecutor:
+            raise NotImplementedError(errors.DECORATED_PROCESS_FUNCTION)
         options = self._normalize_options(timeout, max_workers)
         timeout, max_workers = options["timeout"], options["max_workers"]
 
@@ -295,6 +297,8 @@ class ParallelProxy:
         silent=False,
         unpack_arguments=True,
     ):
+        if hasattr(self, '__decorated') and self.ExecutorClass == ProcessExecutor:
+            raise NotImplementedError(errors.DECORATED_PROCESS_FUNCTION)
         options = self._normalize_options(max_workers=max_workers)
         timeout, max_workers = options["timeout"], options["max_workers"]
 
@@ -323,6 +327,17 @@ class ParallelProxy:
         return ex
 
 
+class BoundParallelProxy(ParallelProxy):
+    BOUND_METHODS = ['map', 'async_map', 'future']
+
+    def __init__(self, fn, *args, **kwargs):
+        self.fn = fn
+        super().__init__(*args, **kwargs)
+        for attr in self.BOUND_METHODS:
+            # self.map = functools.partial(super().map, fn)
+            setattr(self, attr, functools.partial(getattr(super(), attr), fn))
+
+
 class ParallelCallable:
     def __init__(self, fn, ex=THREAD, timeout=None, max_workers=None):
         assert ex in {THREAD, PROCESS}
@@ -331,18 +346,24 @@ class ParallelCallable:
         self.ex = ex
         self.timeout = timeout
         self.max_workers = max_workers
-        self.thread = ParallelProxy(
-            ThreadExecutor, timeout=timeout, max_workers=max_workers
+
+        # self.thread = ParallelProxy(
+        #     ThreadExecutor, timeout=timeout, max_workers=max_workers
+        # )
+        # self.process = ParallelProxy(
+        #     ProcessExecutor, timeout=timeout, max_workers=max_workers
+        # )
+        self.thread = BoundParallelProxy(
+            fn, ThreadExecutor, timeout=timeout, max_workers=max_workers
         )
-        self.process = ParallelProxy(
-            ProcessExecutor, timeout=timeout, max_workers=max_workers
+        self.process = BoundParallelProxy(
+            fn, ProcessExecutor, timeout=timeout, max_workers=max_workers
         )
 
         default_executor = self.thread if ex == THREAD else self.process
-        self.map = functools.partial(default_executor.map, fn)
-        self.async_map = functools.partial(default_executor.async_map, fn)
-
-        self.future = functools.partial(default_executor.future, fn)
+        self.map = default_executor.map
+        self.async_map = default_executor.async_map
+        self.future = default_executor.future
 
         functools.update_wrapper(self, fn)
 
@@ -353,10 +374,16 @@ class ParallelCallable:
 def decorate(*args, **kwargs):
     if len(args) > 0 and callable(args[0]):
         # Decorating function
-        return ParallelCallable(args[0])
+        obj = ParallelCallable(args[0])
+        obj.thread.__decorated = True
+        obj.process.__decorated = True
+        return obj
     else:
         def wrapper(fn):
-            return ParallelCallable(fn, *args, **kwargs)
+            obj = ParallelCallable(fn, *args, **kwargs)
+            obj.thread.__decorated = True
+            obj.process.__decorated = True
+            return obj
 
         return wrapper
 
@@ -410,6 +437,7 @@ def par(params, max_workers=None, timeout=None, extras=None, silent=False):
     return ParallelProxy(ThreadExecutor).par(
         params, max_workers=max_workers, timeout=timeout, extras=extras, silent=silent
     )
+
 
 def async_par(params, max_workers=None, extras=None):
     # TODO: Accept custom executor

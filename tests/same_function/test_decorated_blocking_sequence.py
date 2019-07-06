@@ -469,6 +469,54 @@ class TestOptions(BaseSameFunctionParallelOtherOptionsTestCase):
         assert results == ['a', 'b', 'c']
 
 
+class TestThreadProcessModifiers:
+    def test_thread_modifier_with_thread_default(self):
+        @parallel.decorate
+        def sleep_return(sleep, result):
+            time.sleep(sleep)
+            return result
+
+        results = sleep_return.thread.map([
+            (.2, 'a'), (.3, 'b'), (.1, 'c')
+        ])
+
+        assert results == ['a', 'b', 'c']
+
+    def test_thread_modifier_with_process_default(self):
+        @parallel.decorate(ex=parallel.PROCESS)
+        def sleep_return(sleep, result):
+            time.sleep(sleep)
+            return result
+
+        results = sleep_return.thread.map([
+            (.2, 'a'), (.3, 'b'), (.1, 'c')
+        ])
+
+        assert results == ['a', 'b', 'c']
+
+    def test_process_modifier_with_process_default(self):
+        @parallel.decorate(ex=parallel.PROCESS)
+        def sleep_return(sleep, result):
+            time.sleep(sleep)
+            return result
+
+        with pytest.raises(NotImplementedError):
+            sleep_return.map([
+                (.2, 'a'), (.3, 'b'), (.1, 'c')
+            ])
+
+    def test_process_modifier_with_thread_default(self):
+        @parallel.decorate
+        def sleep_return(sleep, result):
+            time.sleep(sleep)
+            return result
+
+        with pytest.raises(NotImplementedError):
+            sleep_return.process.map([
+                (.2, 'a'), (.3, 'b'), (.1, 'c')
+            ])
+
+
 class TestRegressions:
     def test_parameter_out_of_order_with_extras(self):
         @parallel.decorate
