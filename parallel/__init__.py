@@ -171,7 +171,7 @@ class BaseParallelExecutor:
                 try:
                     results.new_result(name, future.result(timeout or self.timeout))
                 except cf.TimeoutError as e:
-                    raise exceptions.TimeoutException()
+                    raise exceptions.TimeoutException() from e
             except Exception as e:
                 if not silent:
                     raise e
