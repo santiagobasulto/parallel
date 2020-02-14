@@ -1,0 +1,36 @@
+Docs planning:
+* Index
+    * 10,000 ft view
+* Quickstart
+    * Explanation of multiple methods (map, par, spawn)
+    * Explanation of each one of the parameter changes
+* Why Parallel?
+    * Objectives? Usages? what's the end goal of parallel, and when not to use it.
+* Contributing
+* API Reference
+
+
+
+
+
+=======
+
+
+Quickstart ordering:
+* Introduce functions (map, par, async_spawn)
+* Executors
+    * Picking Executors
+    * Parameters
+* Decorator
+* Parameters (Part 1)
+    * Sequence vs Dict
+    * Named Parameters
+    * Extras (params take precedence over extras)
+* Error handling
+    * No handling by default
+    * silent parameter will catch exceptions
+
+=======
+
+FUTURE:
+* Retries
