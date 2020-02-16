@@ -159,6 +159,29 @@ class ParallelHelper:
         ) as ex:
             return ex.results()
 
+    def async_map(
+        self,
+        fn,
+        params,
+        extras=None,
+        unpack_arguments=True,
+        max_workers=None,
+        timeout=None,
+        silent=False,
+    ):
+        jobs = ParallelJob.build_from_params(
+            fn, params, extras=extras, unpack_arguments=unpack_arguments
+        )
+        ResultClass = self.get_result_class(params)
+        ex = self.ExecutorClass(
+            jobs,
+            max_workers=max_workers,
+            timeout=timeout,
+            silent=silent,
+            ResultClass=ResultClass,
+        )
+        return ex
+
 
 def map(
     fn,
@@ -171,6 +194,27 @@ def map(
     unpack_arguments=True,
 ):
     return ParallelHelper(executor).map(
+        fn,
+        params,
+        extras=extras,
+        unpack_arguments=unpack_arguments,
+        max_workers=max_workers,
+        timeout=timeout,
+        silent=silent,
+    )
+
+
+def async_map(
+    fn,
+    params,
+    executor=ExecutorStrategy.THREAD_EXECUTOR,
+    max_workers=None,
+    timeout=None,
+    extras=None,
+    silent=False,
+    unpack_arguments=True,
+):
+    return ParallelHelper(executor).async_map(
         fn,
         params,
         extras=extras,
