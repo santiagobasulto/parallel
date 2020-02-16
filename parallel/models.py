@@ -4,10 +4,10 @@ import collections
 
 @enum.unique
 class ParallelStatus(enum.Enum):
-    NOT_STARTED = 'NOT_STARTED'
-    STARTED = 'STARTED'
-    DONE = 'DONE'
-    FAILED = 'FAILED'
+    NOT_STARTED = "NOT_STARTED"
+    STARTED = "STARTED"
+    DONE = "DONE"
+    FAILED = "FAILED"
 
 
 class ParallelArg:
@@ -30,14 +30,16 @@ class ParallelJob:
         # self.results # (prev results or failed tasks)
 
     def __eq__(self, other):
-        return all([
-            self.fn == other.fn,
-            self.name == other.name,
-            self.args == other.args,
-            self.kwargs == other.kwargs
-        ])
+        return all(
+            [
+                self.fn == other.fn,
+                self.name == other.name,
+                self.args == other.args,
+                self.kwargs == other.kwargs,
+            ]
+        )
 
-    def __repr__(self):
+    def __repr__(self):  # pragma: no cover
         return f"{self.__class__.__name__}({self.fn}, {self.name}, {self.args}, {self.kwargs})"
 
     @classmethod
@@ -48,11 +50,11 @@ class ParallelJob:
         if isinstance(params, ParallelArg):
             return params.args, {**normalized_kwargs, **params.kwargs}
         if not unpack_arguments:
-            return (params, ), normalized_kwargs
+            return (params,), normalized_kwargs
         if isinstance(params, dict):
             return tuple(), {**normalized_kwargs, **params}
         if not isinstance(params, collections.abc.Sequence):
-            return (params, ), normalized_kwargs
+            return (params,), normalized_kwargs
         for param in params:
             if isinstance(param, dict):
                 normalized_kwargs.update(param)
@@ -65,13 +67,21 @@ class ParallelJob:
         if isinstance(params, collections.abc.Sequence):
             normalized = (
                 cls.normalize_params(param, extras, unpack_arguments)
-                for param in params)
-            return [cls(fn, name=None, args=args, kwargs=kwargs) for args, kwargs in normalized]
+                for param in params
+            )
+            return [
+                cls(fn, name=None, args=args, kwargs=kwargs)
+                for args, kwargs in normalized
+            ]
         elif isinstance(params, dict):
             normalized = (
                 (name, cls.normalize_params(param, extras, unpack_arguments))
-                for name, param in params.items())
-            return [cls(fn, name=name, args=args, kwargs=kwargs) for name, (args, kwargs) in normalized]
+                for name, param in params.items()
+            )
+            return [
+                cls(fn, name=name, args=args, kwargs=kwargs)
+                for name, (args, kwargs) in normalized
+            ]
 
 
 class FailedTask:
@@ -80,19 +90,15 @@ class FailedTask:
         self.exc = exc
 
     def __eq__(self, other):
-        if type(self) != type(other):
+        if type(self) != type(other):  # pragma: no cover
             return False
-        return all([
-            self.job == other.job,
-            self.exc == other.exc
-        ])
+        return all([self.job == other.job, self.exc == other.exc])
 
-    def __repr__(self):
-        return "FailedTask(job={}, exc={})".format(
-            self.job, self.exc.__class__)
+    def __repr__(self):  # pragma: no cover
+        return "FailedTask(job={}, exc={})".format(self.job, self.exc.__class__)
 
 
-class BaseResult:
+class BaseResult:  # pragma: no cover
     def new_result(self, name, result):
         raise NotImplementedError()
 

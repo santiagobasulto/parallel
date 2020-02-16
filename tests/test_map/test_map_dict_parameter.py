@@ -311,3 +311,58 @@ def test_map_dict_silent_mode_catches_exceptions_with_named_parameters():
     }
 
     assert results == expected
+
+
+###########################################
+# Special Results attributes for failures #
+###########################################
+def test_map_dict_special_result_attributes():
+    results = parallel.map(sleep_return_multi_param, {
+            'r1': (.2, 'a'),
+            'r2': ('Will Fail', 'b'),
+            'r3': (.1, 'c')
+        }, silent=True)
+
+    assert results.failures is True
+
+    assert results == {
+        'r1': 'a',
+        'r2': parallel.FailedTask(
+            ParallelJob(sleep_return_multi_param, 'r2', args=('Will Fail', 'b')),
+            exc=TestingException('Will Fail')
+        ),
+        'r3': 'c'
+    }
+    assert results.succeeded == {'r1': 'a', 'r3': 'c'}
+    assert results.failed == {
+        'r2': parallel.FailedTask(
+            ParallelJob(sleep_return_multi_param, 'r2', args=('Will Fail', 'b')),
+            exc=TestingException('Will Fail')
+        )
+    }
+
+    assert results.replace_failed(None) == {'r1': 'a', 'r2': None, 'r3': 'c'}
+
+#########################################
+# Timeout exception is correctly raised #
+#########################################
+def test_map_doct_timeout_fails():
+    with pytest.raises(parallel.exceptions.TimeoutException):
+        parallel.map(sleep_return_single_param, {'r1': 1}, timeout=.1)
+
+
+#########################
+# Modifier: max_workers #
+#########################
+def test_map_sequence_max_workers_modifier():
+    results = parallel.map(sleep_return_multi_param, {
+        'r1': (.2, 'a'),
+        'r2': (.3, 'b'),
+        'r3': (.1, 'c')
+    }, max_workers=1)
+
+    assert results == {
+        'r1': 'a',
+        'r2': 'b',
+        'r3': 'c',
+    }

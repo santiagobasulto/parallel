@@ -7,29 +7,40 @@ import concurrent.futures as cf
 from . import errors
 from . import exceptions
 from .models import (
-    ParallelJob, ParallelArg,
-    ParallelStatus, FailedTask,
-    SequentialMapResult, NamedMapResult
+    ParallelJob,
+    ParallelArg,
+    ParallelStatus,
+    FailedTask,
+    SequentialMapResult,
+    NamedMapResult,
 )
 
 
-#__all__ = ["decorate", "arg", "future", "map", "async_map", "par", "async_par"]
+# __all__ = ["decorate", "arg", "future", "map", "async_map", "par", "async_par"]
 __all__ = ["map", "async_map", "par", "async_par"]
 
-__version__ = '0.0.2'
-__author__ = 'Santiago Basulto <santiago.basulto@gmail.com>'
+__version__ = "0.0.2"
+__author__ = "Santiago Basulto <santiago.basulto@gmail.com>"
 
 
 class ExecutorStrategy(enum.Enum):
     THREAD_EXECUTOR = "thread"
     PROCESS_EXECUTOR = "process"
 
+
 THREAD_EXECUTOR = ExecutorStrategy.THREAD_EXECUTOR
 PROCESS_EXECUTOR = ExecutorStrategy.PROCESS_EXECUTOR
 
 
 class BaseParallelExecutor:
-    def __init__(self, jobs, max_workers=None, timeout=None, silent=False, ResultClass=SequentialMapResult):
+    def __init__(
+        self,
+        jobs,
+        max_workers=None,
+        timeout=None,
+        silent=False,
+        ResultClass=SequentialMapResult,
+    ):
         self.jobs = jobs
         self.max_workers = max_workers
         self.timeout = timeout
@@ -39,7 +50,7 @@ class BaseParallelExecutor:
         self.__executor = None
         self.__results = None
 
-    def _get_executor_class(self):
+    def _get_executor_class(self):  # pragma: no cover
         raise NotImplementedError()
 
     @property
@@ -69,12 +80,14 @@ class BaseParallelExecutor:
         if self.__results:
             return self.__results
 
-        # ResultClass = self.get_result_class()
-        self.__results = self.ResultClass()
         if self.__status == ParallelStatus.NOT_STARTED:
             raise exceptions.ParallelStatusException(errors.STATUS_EXECUTOR_NOT_STARTED)
-        assert self.__status in {ParallelStatus.STARTED, ParallelStatus.DONE}
+        # assert self.__status in {ParallelStatus.STARTED, ParallelStatus.DONE, ParallelStatus.FAILED}
 
+        ResultClass = self.ResultClass
+        self.__results = ResultClass()
+
+        # import ipdb; ipdb.set_trace()
         for job in self.jobs:
             try:
                 result = job.future.result(timeout=(timeout or self.timeout))
@@ -92,7 +105,6 @@ class BaseParallelExecutor:
         return self.__results
 
     def shutdown(self):
-        assert self.__status in {ParallelStatus.DONE, ParallelStatus.FAILED}
         self.__executor.shutdown()
 
 
@@ -108,8 +120,9 @@ class ProcessExecutor(BaseParallelExecutor):
 
 EXECUTOR_MAPPING = {
     ExecutorStrategy.THREAD_EXECUTOR: ThreadExecutor,
-    ExecutorStrategy.PROCESS_EXECUTOR: ProcessExecutor
+    ExecutorStrategy.PROCESS_EXECUTOR: ProcessExecutor,
 }
+
 
 class ParallelHelper:
     def __init__(self, executor=ExecutorStrategy.THREAD_EXECUTOR):
@@ -134,10 +147,18 @@ class ParallelHelper:
         silent=False,
     ):
         jobs = ParallelJob.build_from_params(
-            fn, params, extras=extras, unpack_arguments=unpack_arguments)
+            fn, params, extras=extras, unpack_arguments=unpack_arguments
+        )
         ResultClass = self.get_result_class(params)
-        with self.ExecutorClass(jobs, max_workers=max_workers, timeout=timeout, silent=silent, ResultClass=ResultClass) as ex:
+        with self.ExecutorClass(
+            jobs,
+            max_workers=max_workers,
+            timeout=timeout,
+            silent=silent,
+            ResultClass=ResultClass,
+        ) as ex:
             return ex.results()
+
 
 def map(
     fn,
@@ -149,9 +170,16 @@ def map(
     silent=False,
     unpack_arguments=True,
 ):
-    return ParallelHelper(executor).map(fn, params, extras=extras,
-                                 unpack_arguments=unpack_arguments, max_workers=max_workers,
-                                 timeout=timeout, silent=silent)
+    return ParallelHelper(executor).map(
+        fn,
+        params,
+        extras=extras,
+        unpack_arguments=unpack_arguments,
+        max_workers=max_workers,
+        timeout=timeout,
+        silent=silent,
+    )
+
 
 thread = ParallelHelper(ThreadExecutor)
 process = ParallelHelper(ProcessExecutor)
