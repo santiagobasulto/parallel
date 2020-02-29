@@ -146,7 +146,7 @@ class ParallelHelper:
         timeout=None,
         silent=False,
     ):
-        jobs = ParallelJob.build_from_params(
+        jobs = ParallelJob.build_for_callable_from_params(
             fn, params, extras=extras, unpack_arguments=unpack_arguments
         )
         ResultClass = self.get_result_class(params)
@@ -169,7 +169,7 @@ class ParallelHelper:
         timeout=None,
         silent=False,
     ):
-        jobs = ParallelJob.build_from_params(
+        jobs = ParallelJob.build_for_callable_from_params(
             fn, params, extras=extras, unpack_arguments=unpack_arguments
         )
         ResultClass = self.get_result_class(params)
@@ -181,6 +181,28 @@ class ParallelHelper:
             ResultClass=ResultClass,
         )
         return ex
+
+    def par(
+        self,
+        params,
+        extras=None,
+        unpack_arguments=True,
+        max_workers=None,
+        timeout=None,
+        silent=False,
+    ):
+        jobs = ParallelJob.build_jobs_from_params(
+            params, extras=extras, unpack_arguments=unpack_arguments
+        )
+        ResultClass = self.get_result_class(params)
+        with self.ExecutorClass(
+            jobs,
+            max_workers=max_workers,
+            timeout=timeout,
+            silent=silent,
+            ResultClass=ResultClass,
+        ) as ex:
+            return ex.results()
 
 
 def map(
@@ -225,11 +247,36 @@ def async_map(
     )
 
 
+def par(
+    params,
+    executor=ExecutorStrategy.THREAD_EXECUTOR,
+    max_workers=None,
+    timeout=None,
+    extras=None,
+    silent=False,
+    unpack_arguments=True,
+):
+    return ParallelHelper(executor).par(
+        params,
+        extras=extras,
+        unpack_arguments=unpack_arguments,
+        max_workers=max_workers,
+        timeout=timeout,
+        silent=silent,
+    )
+
+
 thread = ParallelHelper(ThreadExecutor)
 process = ParallelHelper(ProcessExecutor)
 
 arg = lambda *args, **kwargs: ParallelArg(*args, **kwargs)
 arg.__doc__ = "TODO"
+
+
+def job(*args, **kwargs):
+    "TODO"
+    fn, *args = args
+    return ParallelJob(fn, None, args, kwargs)
 
 NOT_STARTED = ParallelStatus.NOT_STARTED
 STARTED = ParallelStatus.STARTED

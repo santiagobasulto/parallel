@@ -16,6 +16,17 @@ class ParallelArg:
         self.kwargs = kwargs
 
 
+class _UniversalParallelParametersCollection:
+    def __init__(self, params):
+        self.params = params
+
+    def iter_params(self):
+        if isinstance(self.params, collections.abc.Sequence):
+            yield from ((None, param) for param in self.params)
+        elif isinstance(self.params, dict):
+            yield from self.params.items()
+
+
 class ParallelJob:
     def __init__(self, fn, name=None, args=None, kwargs=None):
         self.fn = fn
@@ -63,25 +74,38 @@ class ParallelJob:
         return tuple(normalized_args), normalized_kwargs
 
     @classmethod
-    def build_from_params(cls, fn, params, extras=None, unpack_arguments=True):
-        if isinstance(params, collections.abc.Sequence):
-            normalized = (
-                cls.normalize_params(param, extras, unpack_arguments)
-                for param in params
+    def normalize_job(cls, name, params, extras=None, unpack_arguments=True):
+        if isinstance(params, cls):
+            extras = extras or {}
+            return cls(
+                fn=params.fn,
+                name=params.name or name,
+                args=params.args,
+                kwargs={**extras, **params.kwargs}
             )
-            return [
-                cls(fn, name=None, args=args, kwargs=kwargs)
-                for args, kwargs in normalized
-            ]
-        elif isinstance(params, dict):
-            normalized = (
-                (name, cls.normalize_params(param, extras, unpack_arguments))
-                for name, param in params.items()
-            )
-            return [
-                cls(fn, name=name, args=args, kwargs=kwargs)
-                for name, (args, kwargs) in normalized
-            ]
+        assert isinstance(params, collections.abc.Sequence)
+        fn, *args = params
+        if not unpack_arguments and len(args) == 1:
+            args = args[0]
+        (args, kwargs) = cls.normalize_params(args, extras, unpack_arguments)
+        return cls(fn, name=name, args=args, kwargs=kwargs)
+
+    @classmethod
+    def build_jobs_from_params(cls, params, extras=None, unpack_arguments=True):
+        params =_UniversalParallelParametersCollection(params)
+        return [cls.normalize_job(name, param, extras, unpack_arguments) for name, param in params.iter_params()]
+
+    @classmethod
+    def build_for_callable_from_params(cls, fn, params, extras=None, unpack_arguments=True):
+        params =_UniversalParallelParametersCollection(params)
+        normalized = (
+            (name, cls.normalize_params(param, extras, unpack_arguments))
+            for name, param in params.iter_params()
+        )
+        return [
+            cls(fn, name=name, args=args, kwargs=kwargs)
+            for name, (args, kwargs) in normalized
+        ]
 
 
 class FailedTask:

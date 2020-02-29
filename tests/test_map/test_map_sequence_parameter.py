@@ -6,7 +6,6 @@ from parallel.models import ParallelJob
 
 from ..base import *
 
-# Tests:
 
 ####################
 # Single Parameter #
