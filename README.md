@@ -1,6 +1,10 @@
-# parallel
+<h1 align="center">
+  <br>
+  <a href="https://python-parallel.readthedocs.io/en/latest/"><img src="https://user-images.githubusercontent.com/872296/76652212-83173200-653c-11ea-9ff6-dd61195e0e68.png" alt="Python Parallel" width="500"></a>
+  <br>
+</h1>
 
-> Bringing _parallelism_ closer to humans ✨
+<h4 align="center">Instant multi-thread/multi-process parallelism for Python ✨</h4>
 
 
 **Important**: `parallel` is in an early stage. All questions and suggestions are welcome. Check the section [#Contributing](#Contributing) below or [submit an issue](https://github.com/santiagobasulto/parallel/issues).
