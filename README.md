@@ -1,6 +1,8 @@
 <h1 align="center">
   <br>
-  <a href="https://python-parallel.readthedocs.io/en/latest/"><img src="https://user-images.githubusercontent.com/872296/76652212-83173200-653c-11ea-9ff6-dd61195e0e68.png" alt="Python Parallel" width="500"></a>
+  <a href="https://python-parallel.readthedocs.io/en/latest/"><img src="https://user-images.githubusercontent.com/872296/76652584-44ce4280-653d-11ea-8b8c-5e33939f1762.png" alt="Python Parallel" width="200"></a>
+  <br>
+  Parallel
   <br>
 </h1>
 
