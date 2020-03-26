@@ -337,7 +337,6 @@ def decorate(*args, **kwargs):
     if len(args) == 1 and callable(args[0]):
         # Invoked without parameters
         obj = ParallelDecorator(args[0])
-        functools.update_wrapper(obj, args[0], functools.WRAPPER_ASSIGNMENTS + ('__id__', '__hash__'))
         return obj
     else:
         def wrapper(fn):

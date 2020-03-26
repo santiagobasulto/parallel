@@ -161,3 +161,29 @@ def test_map_silent_mode():
     a, failed_task, c = [results[k] for k in ['r1', 'r2', 'r3']]
     assert (a, c) == ('a', 'c')
     assert isinstance(failed_task, parallel.FailedTask)
+
+
+def test_map_options_timeout():
+    with pytest.raises(parallel.exceptions.TimeoutException):
+        sleep_return_single_param_decorated.map([1], timeout=.1)
+
+
+def test_map_options_max_workers():
+    results = sleep_return_multi_param_decorated.map([
+        (.2, 'a'), (.3, 'b'), (.1, 'c')
+    ], max_workers=1)
+
+    assert results == ['a', 'b', 'c']
+
+
+def test_map_decorator_with_timeout_option():
+    with pytest.raises(parallel.exceptions.TimeoutException):
+        sleep_return_single_param_decorated_timeout.map([1])
+
+
+def test_map_decorator_with_max_workers_option():
+    results = sleep_return_multi_param_decorated_max_workers.map([
+        (.2, 'a'), (.3, 'b'), (.1, 'c')
+    ])
+
+    assert results == ['a', 'b', 'c']

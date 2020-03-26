@@ -14,6 +14,8 @@ __all__ = [
     'sleep_return_multi_param_decorated',
     'sleep_return_optional_param_decorated',
     'sleep_return_tuple_decorated',
+    'sleep_return_single_param_decorated_timeout',
+    'sleep_return_multi_param_decorated_max_workers',
 
     'TestingException'
 ]
@@ -71,6 +73,7 @@ def sleep_return_multi_param_decorated(sleep, result):
     time.sleep(sleep)
     return result
 
+
 @parallel.decorate
 def sleep_return_optional_param_decorated(sleep, result, uppercase=False):
     time.sleep(sleep)
@@ -78,8 +81,23 @@ def sleep_return_optional_param_decorated(sleep, result, uppercase=False):
         return result.upper()
     return result
 
+
 @parallel.decorate
 def sleep_return_tuple_decorated(a_tuple):
     sleep, result = a_tuple
+    time.sleep(sleep)
+    return result
+
+
+@parallel.decorate(timeout=.1)
+def sleep_return_single_param_decorated_timeout(sleep):
+    time.sleep(sleep)
+    return str(sleep)
+
+
+@parallel.decorate(max_workers=1)
+def sleep_return_multi_param_decorated_max_workers(sleep, result):
+    if type(sleep) == str:
+        raise TestingException(sleep)
     time.sleep(sleep)
     return result
