@@ -1,5 +1,7 @@
 import time
 
+import parallel
+
 __all__ = [
     'sleep_return_single_param',
     'sleep_return_tuple',
@@ -7,6 +9,11 @@ __all__ = [
     'sleep_return_optional_param',
     'sleep_return_tuple_optional',
     'sleep_return_kwargs',
+
+    'sleep_return_single_param_decorated',
+    'sleep_return_multi_param_decorated',
+    'sleep_return_optional_param_decorated',
+    'sleep_return_tuple_decorated',
 
     'TestingException'
 ]
@@ -48,4 +55,31 @@ def sleep_return_kwargs(sleep, **kwargs):
     time.sleep(sleep)
     if uppercase:
         return result.upper()
+    return result
+
+
+@parallel.decorate
+def sleep_return_single_param_decorated(sleep):
+    time.sleep(sleep)
+    return str(sleep)
+
+
+@parallel.decorate
+def sleep_return_multi_param_decorated(sleep, result):
+    if type(sleep) == str:
+        raise TestingException(sleep)
+    time.sleep(sleep)
+    return result
+
+@parallel.decorate
+def sleep_return_optional_param_decorated(sleep, result, uppercase=False):
+    time.sleep(sleep)
+    if uppercase:
+        return result.upper()
+    return result
+
+@parallel.decorate
+def sleep_return_tuple_decorated(a_tuple):
+    sleep, result = a_tuple
+    time.sleep(sleep)
     return result

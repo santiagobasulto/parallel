@@ -266,6 +266,86 @@ def par(
     )
 
 
+class ParallelCallable:
+    def __init__(
+        self,
+        fn,
+        executor,
+        timeout,
+        max_workers,
+    ):
+
+        self.fn = fn
+        self.executor = executor
+        self.timeout = timeout
+        self.max_workers = max_workers
+
+    def map(
+        self,
+        params,
+        executor=None,
+        max_workers=None,
+        timeout=None,
+        extras=None,
+        silent=False,
+        unpack_arguments=True,
+    ):
+        executor = executor or self.executor
+        return ParallelHelper(executor).map(
+            self.fn,
+            params,
+            extras=extras,
+            unpack_arguments=unpack_arguments,
+            max_workers=(max_workers or self.max_workers),
+            timeout=(timeout or self.timeout),
+            silent=silent,
+        )
+
+    def __call__(self, *args, **kwargs):
+        return self.fn(*args, **kwargs)
+
+
+class ParallelDecorator:
+    def __init__(
+        self,
+        fn,
+        executor=ExecutorStrategy.THREAD_EXECUTOR,
+        timeout=None,
+        max_workers=None,
+    ):
+
+        self.fn = fn
+        self.thread = ParallelCallable(
+            fn, ExecutorStrategy.THREAD_EXECUTOR, timeout=timeout,
+            max_workers=max_workers)
+        self.process = ParallelCallable(
+            fn, ExecutorStrategy.PROCESS_EXECUTOR, timeout=timeout,
+            max_workers=max_workers)
+        if executor == ExecutorStrategy.THREAD_EXECUTOR:
+            self.default_executor = self.thread
+        else:
+            self.default_executor = self.process
+
+    map = lambda self, *args, **kwargs: self.default_executor.map(
+        *args, **kwargs)
+
+    def __call__(self, *args, **kwargs):
+        return self.fn(*args, **kwargs)
+
+
+def decorate(*args, **kwargs):
+    if len(args) == 1 and callable(args[0]):
+        # Invoked without parameters
+        obj = ParallelDecorator(args[0])
+        functools.update_wrapper(obj, args[0], functools.WRAPPER_ASSIGNMENTS + ('__id__', '__hash__'))
+        return obj
+    else:
+        def wrapper(fn):
+            obj = ParallelDecorator(fn, *args, **kwargs)
+            return obj
+        return wrapper
+
+
 thread = ParallelHelper(ThreadExecutor)
 process = ParallelHelper(ProcessExecutor)
 
@@ -277,6 +357,7 @@ def job(*args, **kwargs):
     "TODO"
     fn, *args = args
     return ParallelJob(fn, None, args, kwargs)
+
 
 NOT_STARTED = ParallelStatus.NOT_STARTED
 STARTED = ParallelStatus.STARTED
