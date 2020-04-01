@@ -301,6 +301,27 @@ class ParallelCallable:
             silent=silent,
         )
 
+    def async_map(
+        self,
+        params,
+        executor=None,
+        max_workers=None,
+        timeout=None,
+        extras=None,
+        silent=False,
+        unpack_arguments=True,
+    ):
+        executor = executor or self.executor
+        return ParallelHelper(executor).async_map(
+            self.fn,
+            params,
+            extras=extras,
+            unpack_arguments=unpack_arguments,
+            max_workers=(max_workers or self.max_workers),
+            timeout=(timeout or self.timeout),
+            silent=silent,
+        )
+
     def __call__(self, *args, **kwargs):
         return self.fn(*args, **kwargs)
 
@@ -328,6 +349,12 @@ class ParallelDecorator:
 
     map = lambda self, *args, **kwargs: self.default_executor.map(
         *args, **kwargs)
+
+    async_map = lambda self, *args, **kwargs: self.default_executor.async_map(
+        *args, **kwargs)
+
+    def future(self, *args, **kwargs):
+        return job(self.fn, *args, **kwargs)
 
     def __call__(self, *args, **kwargs):
         return self.fn(*args, **kwargs)
