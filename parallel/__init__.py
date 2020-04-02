@@ -1,10 +1,12 @@
 import enum
 
 import functools
+import itertools
 import collections
 import concurrent.futures as cf
 
 from . import errors
+from . import utils
 from . import exceptions
 from .models import (
     ParallelJob,
@@ -82,12 +84,10 @@ class BaseParallelExecutor:
 
         if self.__status == ParallelStatus.NOT_STARTED:
             raise exceptions.ParallelStatusException(errors.STATUS_EXECUTOR_NOT_STARTED)
-        # assert self.__status in {ParallelStatus.STARTED, ParallelStatus.DONE, ParallelStatus.FAILED}
 
         ResultClass = self.ResultClass
         self.__results = ResultClass()
 
-        # import ipdb; ipdb.set_trace()
         for job in self.jobs:
             try:
                 result = job.future.result(timeout=(timeout or self.timeout))
@@ -204,6 +204,32 @@ class ParallelHelper:
         ) as ex:
             return ex.results()
 
+    def split(
+        self,
+        collection,
+        fn,
+        executor=ExecutorStrategy.THREAD_EXECUTOR,
+        workers=None,
+        timeout=None,
+        extras=None,
+    ):
+        workers = workers or 4
+        chunks = utils.split_collection(collection, workers)
+        jobs = [
+            ParallelJob(fn, None, [chunk], (extras or {}).copy())
+            for chunk in chunks
+        ]
+
+        with self.ExecutorClass(
+            jobs,
+            max_workers=workers,
+            timeout=timeout,
+            ResultClass=SequentialMapResult,
+        ) as ex:
+            results = ex.results()
+            return list(itertools.chain.from_iterable(results))
+            #[item for sublist in l for item in sublist]
+
 
 def map(
     fn,
@@ -266,13 +292,22 @@ def par(
     )
 
 
+def split(
+    collection,
+    fn,
+    executor=ExecutorStrategy.THREAD_EXECUTOR,
+    workers=None,
+    timeout=None,
+    extras=None,
+):
+    return ParallelHelper(executor).split(
+        collection, fn, extras=extras, workers=workers, timeout=timeout
+    )
+
+
 class ParallelCallable:
     def __init__(
-        self,
-        fn,
-        executor,
-        timeout,
-        max_workers,
+        self, fn, executor, timeout, max_workers,
     ):
 
         self.fn = fn
@@ -337,21 +372,27 @@ class ParallelDecorator:
 
         self.fn = fn
         self.thread = ParallelCallable(
-            fn, ExecutorStrategy.THREAD_EXECUTOR, timeout=timeout,
-            max_workers=max_workers)
+            fn,
+            ExecutorStrategy.THREAD_EXECUTOR,
+            timeout=timeout,
+            max_workers=max_workers,
+        )
         self.process = ParallelCallable(
-            fn, ExecutorStrategy.PROCESS_EXECUTOR, timeout=timeout,
-            max_workers=max_workers)
+            fn,
+            ExecutorStrategy.PROCESS_EXECUTOR,
+            timeout=timeout,
+            max_workers=max_workers,
+        )
         if executor == ExecutorStrategy.THREAD_EXECUTOR:
             self.default_executor = self.thread
         else:
             self.default_executor = self.process
 
-    map = lambda self, *args, **kwargs: self.default_executor.map(
-        *args, **kwargs)
+    map = lambda self, *args, **kwargs: self.default_executor.map(*args, **kwargs)
 
     async_map = lambda self, *args, **kwargs: self.default_executor.async_map(
-        *args, **kwargs)
+        *args, **kwargs
+    )
 
     def future(self, *args, **kwargs):
         return job(self.fn, *args, **kwargs)
@@ -366,9 +407,11 @@ def decorate(*args, **kwargs):
         obj = ParallelDecorator(args[0])
         return obj
     else:
+
         def wrapper(fn):
             obj = ParallelDecorator(fn, *args, **kwargs)
             return obj
+
         return wrapper
 
 
