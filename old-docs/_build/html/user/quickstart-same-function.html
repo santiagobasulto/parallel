@@ -1,0 +1,420 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Quickstart: Parallelize a function with multiple executions &#8212; Parallel 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../_static/flask.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Quickstart: Run multiple functions in parallel" href="quickstart-multiple-functions.html" />
+    <link rel="prev" title="Parallel: Parallelism for Humans" href="../index.html" />
+  <script>DOCUMENTATION_OPTIONS.URL_ROOT = '../';</script>
+   
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="quickstart-multiple-functions.html" title="Quickstart: Run multiple functions in parallel"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../index.html" title="Parallel: Parallelism for Humans"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Parallel 0.0.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="quickstart-parallelize-a-function-with-multiple-executions">
+<h1>Quickstart: Parallelize a function with multiple executions<a class="headerlink" href="#quickstart-parallelize-a-function-with-multiple-executions" title="Permalink to this headline">¶</a></h1>
+<p><strong>Important:</strong> Most of the examples in this document are written using the
+<strong>Blocking API</strong> and <strong>decorated</strong> function style. At the end of this doc
+there are examples of both, <strong>non-decorated</strong> functions and the
+<strong>Non Blocking API</strong>.</p>
+<div class="section" id="the-basics">
+<h2>The basics<a class="headerlink" href="#the-basics" title="Permalink to this headline">¶</a></h2>
+<p>In its simpler form, parallel lets you fire up multiple executions of the same function at the same time (in parallel), with the <code class="docutils literal notranslate"><span class="pre">map</span></code> function:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@parallel</span><span class="o">.</span><span class="n">decorate</span>
+<span class="k">def</span> <span class="nf">download_and_store</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">store_in_db</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+<span class="n">urls</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;https://python.org&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;https://python-requests.com&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;https://rmotr.com&#39;</span>
+<span class="p">]</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">download_and_store</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">urls</span><span class="p">)</span>
+
+<span class="c1"># Also includes a summary of the execution</span>
+<span class="n">results</span><span class="o">.</span><span class="n">succeeded</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;https://python.org&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>From this example, <code class="docutils literal notranslate"><span class="pre">results</span></code> is a list-like structure containing the
+results of the function executions, in the same order as they were passed.
+<code class="docutils literal notranslate"><span class="pre">results</span></code> is a rich sequence which also contains a summary of the
+executions and, when run in silent mode, the errors that might arise
+(check the section <em>Errors &amp; Silent Mode</em> <strong>TODO</strong>).</p>
+</div>
+<div class="section" id="running-the-original-function-verbatim">
+<h2>Running the original function verbatim<a class="headerlink" href="#running-the-original-function-verbatim" title="Permalink to this headline">¶</a></h2>
+<p>Parallel will not modify the original function, which can be invoked normally:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">download_and_store</span><span class="p">(</span><span class="s1">&#39;https://python.org&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="named-executions-using-dictionaries">
+<h2>Named executions (using dictionaries)<a class="headerlink" href="#named-executions-using-dictionaries" title="Permalink to this headline">¶</a></h2>
+<p>The name chosen for <code class="docutils literal notranslate"><span class="pre">map</span></code> is just a convention similar to <code class="docutils literal notranslate"><span class="pre">concurrent.futures</span></code>. But <code class="docutils literal notranslate"><span class="pre">map</span></code> is not limited to sequences, it also accepts dictionaries, which allows accessing the results “by name”:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">download_and_store</span><span class="o">.</span><span class="n">map</span><span class="p">({</span>
+    <span class="s1">&#39;python&#39;</span><span class="p">:</span> <span class="s1">&#39;https://python.org&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;rmotr&#39;</span><span class="p">:</span> <span class="s1">&#39;https://rmotr.com&#39;</span>
+<span class="p">})</span>
+
+<span class="n">results</span><span class="p">[</span><span class="s1">&#39;rmotr&#39;</span><span class="p">]</span> <span class="c1"># the results of `rmotr` execution</span>
+<span class="n">results</span><span class="p">[</span><span class="s1">&#39;python&#39;</span><span class="p">]</span> <span class="c1"># the results of `python` execution</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="passing-multiple-parameters">
+<h2>Passing multiple parameters<a class="headerlink" href="#passing-multiple-parameters" title="Permalink to this headline">¶</a></h2>
+<p>Parallel accounts for the usecases of functions receiving multiple parameters
+(as well as named and optional arguments, described below).
+When using <code class="docutils literal notranslate"><span class="pre">map</span></code> with a sequence, Parallel will <em>“expand”</em> the individual
+objects in the sequence as they were multiple parameters:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@parallel</span><span class="o">.</span><span class="n">decorate</span>
+<span class="k">def</span> <span class="nf">download_and_store</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">outfile</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">download_and_store</span><span class="o">.</span><span class="n">map</span><span class="p">([</span>
+    <span class="c1"># The params will be expanded in order:</span>
+    <span class="c1"># (url, outfile)</span>
+    <span class="p">(</span><span class="s1">&#39;https://python.org&#39;</span><span class="p">,</span> <span class="s1">&#39;python.html&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;https://rmotr.com&#39;</span><span class="p">,</span> <span class="s1">&#39;rmotr.html&#39;</span><span class="p">),</span>
+<span class="p">])</span>
+</pre></div>
+</div>
+<p>But, what if your function actually expects a sequence?
+You could choose to <em>“nest”</em> the parameters, but that doesn’t read well,
+so Parallel includes the option <code class="docutils literal notranslate"><span class="pre">unpack_arguments</span></code> (by default being <code class="docutils literal notranslate"><span class="pre">True</span></code>):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@parallel</span><span class="o">.</span><span class="n">decorate</span>
+<span class="k">def</span> <span class="nf">download_and_store</span><span class="p">(</span><span class="n">params</span><span class="p">):</span>
+    <span class="c1"># the function receives a tuple</span>
+    <span class="n">url</span><span class="p">,</span> <span class="n">outfile</span> <span class="o">=</span> <span class="n">params</span>
+    <span class="k">pass</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">download_and_store</span><span class="o">.</span><span class="n">map</span><span class="p">([</span>
+    <span class="c1"># params passed as tuples</span>
+    <span class="p">(</span><span class="s1">&#39;https://python.org&#39;</span><span class="p">,</span> <span class="s1">&#39;python.html&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;https://rmotr.com&#39;</span><span class="p">,</span> <span class="s1">&#39;rmotr.html&#39;</span><span class="p">),</span>
+<span class="p">],</span> <span class="n">unpack_arguments</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="passing-named-arguments">
+<h2>Passing Named Arguments<a class="headerlink" href="#passing-named-arguments" title="Permalink to this headline">¶</a></h2>
+<p>Simply pass named argument to your functions as dictionaries:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@parallel</span><span class="o">.</span><span class="n">decorate</span>
+<span class="k">def</span> <span class="nf">download_and_store</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">outfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">buffer</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">download_and_store</span><span class="o">.</span><span class="n">map</span><span class="p">([</span>
+    <span class="p">(</span><span class="s1">&#39;https://python.org&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;outfile&#39;</span><span class="p">:</span> <span class="s1">&#39;python.html&#39;</span><span class="p">}),</span>
+    <span class="p">(</span><span class="s1">&#39;https://rmotr.com&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;buffer&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">}),</span>
+<span class="p">])</span>
+</pre></div>
+</div>
+<p>If you prefer to be extra explicit and pass ALL the parameters as
+named arguments, you can use a dictionary instead of a sequence (tuple):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@parallel</span><span class="o">.</span><span class="n">decorate</span>
+<span class="k">def</span> <span class="nf">download_and_store</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">outfile</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">download_and_store</span><span class="o">.</span><span class="n">map</span><span class="p">([</span>
+    <span class="p">{</span><span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://python.org&#39;</span><span class="p">,</span> <span class="s1">&#39;outfile&#39;</span><span class="p">:</span> <span class="s1">&#39;python.html&#39;</span><span class="p">},</span>
+    <span class="p">{</span><span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="s1">&#39;https://rmotr.com&#39;</span><span class="p">,</span> <span class="s1">&#39;outfile&#39;</span><span class="p">:</span> <span class="s1">&#39;rmotr.html&#39;</span><span class="p">},</span>
+<span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="extras-simplify-repeated-arguments">
+<h2>Extras: simplify repeated arguments<a class="headerlink" href="#extras-simplify-repeated-arguments" title="Permalink to this headline">¶</a></h2>
+<p>If there are arguments repeated for every execution, you can avoid the
+repetition by placing it in the <code class="docutils literal notranslate"><span class="pre">extras</span></code> section. Check the following example
+with and without <code class="docutils literal notranslate"><span class="pre">extras</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@parallel</span><span class="o">.</span><span class="n">decorate</span>
+<span class="k">def</span> <span class="nf">download_and_store</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">pretty</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="c1"># WithOUT extras:</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">download_and_store</span><span class="o">.</span><span class="n">map</span><span class="p">([</span>
+    <span class="p">(</span><span class="s1">&#39;https://python.org&#39;</span><span class="p">,</span> <span class="p">{</span>
+        <span class="s1">&#39;outfile&#39;</span><span class="p">:</span> <span class="s1">&#39;python.html&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;pretty&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># repeated!</span>
+        <span class="s1">&#39;indent&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">}),</span>  <span class="c1"># repeated!</span>
+    <span class="p">(</span><span class="s1">&#39;https://rmotr.com&#39;</span><span class="p">,</span> <span class="p">{</span>
+        <span class="s1">&#39;outfile&#39;</span><span class="p">:</span> <span class="s1">&#39;rmotr.html&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;pretty&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>  <span class="c1"># repeated!</span>
+        <span class="s1">&#39;indent&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">}),</span>  <span class="c1"># repeated!</span>
+<span class="p">])</span>
+
+<span class="c1"># With extras:</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">download_and_store</span><span class="o">.</span><span class="n">map</span><span class="p">([</span>
+    <span class="p">(</span><span class="s1">&#39;https://python.org&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;outfile&#39;</span><span class="p">:</span> <span class="s1">&#39;python.html&#39;</span><span class="p">}),</span>
+    <span class="p">(</span><span class="s1">&#39;https://rmotr.com&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;outfile&#39;</span><span class="p">:</span> <span class="s1">&#39;rmotr.html&#39;</span><span class="p">}),</span>
+<span class="p">],</span> <span class="n">extras</span><span class="o">=</span><span class="p">{</span>
+    <span class="s1">&#39;pretty&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s1">&#39;indent&#39;</span><span class="p">:</span> <span class="mi">4</span>
+<span class="p">})</span>
+</pre></div>
+</div>
+<p>In the example above, <code class="docutils literal notranslate"><span class="pre">pretty=True</span></code> and <code class="docutils literal notranslate"><span class="pre">indent=4</span></code> will be passed to
+every function execution. <strong>Important</strong>: this only works with named arguments.</p>
+</div>
+<div class="section" id="advanced-argument-passing">
+<h2>Advanced argument passing<a class="headerlink" href="#advanced-argument-passing" title="Permalink to this headline">¶</a></h2>
+<p>All the features shown above (sequences for parameters, dictionaries for
+named parameters and <code class="docutils literal notranslate"><span class="pre">extras</span></code>) are backed by a custom <code class="docutils literal notranslate"><span class="pre">parallel.arg</span></code>
+object that contains the parameters of your functions.</p>
+<p><strong>Important</strong>. The usage of <code class="docutils literal notranslate"><span class="pre">parallel.arg</span></code> is discouraged as the API
+could change. If you find yourself using it, please report it as an issue
+so we can see what shortcoming we should fix.</p>
+<p>Still, here’s an example of it:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@parallel</span><span class="o">.</span><span class="n">decorate</span>
+<span class="k">def</span> <span class="nf">download_and_store</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">outfile</span><span class="p">,</span> <span class="n">pretty</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">download_and_store</span><span class="o">.</span><span class="n">map</span><span class="p">([</span>
+    <span class="n">parallel</span><span class="o">.</span><span class="n">arg</span><span class="p">(</span>
+        <span class="s1">&#39;https://python.org&#39;</span><span class="p">,</span> <span class="n">outfile</span><span class="o">=</span><span class="s1">&#39;python.html&#39;</span><span class="p">,</span> <span class="n">pretty</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+    <span class="n">parallel</span><span class="o">.</span><span class="n">arg</span><span class="p">(</span>
+        <span class="s1">&#39;https://rmotr.com&#39;</span><span class="p">,</span> <span class="n">outfile</span><span class="o">=</span><span class="s1">&#39;rmotr.html&#39;</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">),</span>
+<span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="other-execution-options">
+<h2>Other execution options<a class="headerlink" href="#other-execution-options" title="Permalink to this headline">¶</a></h2>
+<p>You can control other options like <code class="docutils literal notranslate"><span class="pre">timeout</span></code> and <code class="docutils literal notranslate"><span class="pre">max_workers</span></code> when
+invoking <code class="docutils literal notranslate"><span class="pre">map</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@parallel</span><span class="o">.</span><span class="n">decorate</span>
+<span class="k">def</span> <span class="nf">download_and_store</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">store_in_db</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+<span class="n">urls</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;https://python.org&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;https://python-requests.com&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;https://rmotr.com&#39;</span>
+<span class="p">]</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">download_and_store</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">urls</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">max_workers</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="error-handling-the-silent-mode">
+<h2>Error handling &amp; the Silent mode<a class="headerlink" href="#error-handling-the-silent-mode" title="Permalink to this headline">¶</a></h2>
+<p>By default, if an exception is raised in any of the parallel executions,
+the whole parallel call will fail and propagate that exception.
+There’s also a <em>silent</em> mode that can be activated, that will catch all
+the exceptions raised and return the tasks that didn’t fail:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@parallel</span><span class="o">.</span><span class="n">decorate</span>
+<span class="k">def</span> <span class="nf">download_and_store</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">outfile</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">download_and_store</span><span class="o">.</span><span class="n">map</span><span class="p">([</span>
+    <span class="p">(</span><span class="s1">&#39;https://python.org&#39;</span><span class="p">,</span> <span class="s1">&#39;python.html&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;http://non-existent-website.com&#39;</span><span class="p">,</span> <span class="s1">&#39;error.html&#39;</span><span class="p">),</span>  <span class="c1"># will fail</span>
+    <span class="p">(</span><span class="s1">&#39;https://rmotr.com&#39;</span><span class="p">,</span> <span class="s1">&#39;rmotr.html&#39;</span><span class="p">),</span>
+<span class="p">],</span> <span class="n">silent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Check if something failed</span>
+<span class="n">results</span><span class="o">.</span><span class="n">failures</span> <span class="o">==</span> <span class="kc">True</span>
+
+<span class="c1"># The tasks that didn&#39;t fail are available</span>
+<span class="n">results</span><span class="o">.</span><span class="n">succeeded</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;https://python.org&#39;</span><span class="p">,</span> <span class="s1">&#39;https://rmotr.com&#39;</span><span class="p">]</span>
+
+<span class="c1"># Failed tasks are accessible</span>
+<span class="n">failed_task</span> <span class="o">=</span> <span class="n">results</span><span class="o">.</span><span class="n">failed</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">failed_task</span> <span class="o">==</span> <span class="n">parallel</span><span class="o">.</span><span class="n">FailedTask</span><span class="p">(</span>
+    <span class="n">params</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;http://non-existent-website.com&#39;</span><span class="p">,</span> <span class="s1">&#39;error.html&#39;</span><span class="p">),</span>
+    <span class="n">ex</span><span class="o">=</span><span class="n">requests</span><span class="o">.</span><span class="n">ConnectionError</span><span class="p">(</span><span class="s1">&#39;&lt;redacted&gt; Error message&#39;</span><span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="non-decorated-functions">
+<h2>Non Decorated Functions<a class="headerlink" href="#non-decorated-functions" title="Permalink to this headline">¶</a></h2>
+<p>The examples shown so far used the <em>decorated</em> function style. If you can’t
+(or don’t want) decorate the function, you can still use parallel in its
+full extent.</p>
+<p>To support this, we include a high-level <code class="docutils literal notranslate"><span class="pre">parallel.map</span></code> function that
+acts as the regular <code class="docutils literal notranslate"><span class="pre">map</span></code> operation of decorated functions:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">download_and_store</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">store_in_db</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">download_and_store</span><span class="p">,</span> <span class="p">[</span>
+    <span class="s1">&#39;https://python.org&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;https://python-requests.com&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;https://rmotr.com&#39;</span>
+<span class="p">])</span>
+
+<span class="n">results</span><span class="o">.</span><span class="n">succeeded</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;https://python.org&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>The first parameter of <code class="docutils literal notranslate"><span class="pre">parallel.map</span></code> is the function to parallalize; the
+rest of the arguments work in the same way. Let’s see another example with all
+the features working at the same time:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">download_and_store</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">outfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">buffer</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">download_and_store</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s1">&#39;https://python.org&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;outfile&#39;</span><span class="p">:</span> <span class="s1">&#39;python.html&#39;</span><span class="p">}),</span>
+    <span class="p">(</span><span class="s1">&#39;https://rmotr.com&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;buffer&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">}),</span>
+<span class="p">],</span> <span class="n">extras</span><span class="o">=</span><span class="p">{</span>
+    <span class="s1">&#39;buffer&#39;</span><span class="p">:</span> <span class="mi">4</span>
+<span class="p">},</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">max_workers</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="a-quick-note-on-python-decorators">
+<h2>A quick note on Python decorators<a class="headerlink" href="#a-quick-note-on-python-decorators" title="Permalink to this headline">¶</a></h2>
+<p>Keep in mind that in Python, decorators are just functions applied to
+other functions. Which means that the decoration limitation
+could be easily circumvented with:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">parallel</span>
+
+<span class="c1"># Not decorated function</span>
+<span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+
+<span class="c1"># Quick hack to simulate decorator.</span>
+<span class="n">parallel_sum</span> <span class="o">=</span> <span class="n">paralllel</span><span class="o">.</span><span class="n">decorated</span><span class="p">(</span><span class="nb">sum</span><span class="p">)</span>
+
+<span class="n">parallel_sum</span><span class="o">.</span><span class="n">map</span><span class="p">([</span>
+    <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span>
+    <span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="the-non-blocking-async-api">
+<h2>The Non-Blocking (async) API<a class="headerlink" href="#the-non-blocking-async-api" title="Permalink to this headline">¶</a></h2>
+<p>Parallel also includes a <em>Non Blocking API</em>, which starts the execution of
+the tasks and returns immediately. Here’s an example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@parallel</span><span class="o">.</span><span class="n">decorate</span>
+<span class="k">def</span> <span class="nf">download_and_store</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">store_in_db</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+<span class="n">urls</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;https://python.org&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;https://python-requests.com&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;https://rmotr.com&#39;</span>
+<span class="p">]</span>
+<span class="k">with</span> <span class="n">download_and_store</span><span class="o">.</span><span class="n">async_map</span><span class="p">(</span><span class="n">urls</span><span class="p">,</span> <span class="n">max_workers</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+    <span class="c1"># do something here</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">ex</span><span class="o">.</span><span class="n">results</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This also works for <em>non decorated</em> functions:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">download_and_store</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">store_in_db</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+<span class="n">urls</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;https://python.org&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;https://python-requests.com&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;https://rmotr.com&#39;</span>
+<span class="p">]</span>
+<span class="k">with</span> <span class="n">parallel</span><span class="o">.</span><span class="n">async_map</span><span class="p">(</span><span class="n">download_and_store</span><span class="p">,</span> <span class="n">urls</span><span class="p">,</span> <span class="n">max_workers</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+    <span class="c1"># do something here</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">ex</span><span class="o">.</span><span class="n">results</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+  <span id="sidebar-top"></span>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  
+    
+  
+
+  <h3>Contents</h3>
+  <ul>
+<li><a class="reference internal" href="#">Quickstart: Parallelize a function with multiple executions</a><ul>
+<li><a class="reference internal" href="#the-basics">The basics</a></li>
+<li><a class="reference internal" href="#running-the-original-function-verbatim">Running the original function verbatim</a></li>
+<li><a class="reference internal" href="#named-executions-using-dictionaries">Named executions (using dictionaries)</a></li>
+<li><a class="reference internal" href="#passing-multiple-parameters">Passing multiple parameters</a></li>
+<li><a class="reference internal" href="#passing-named-arguments">Passing Named Arguments</a></li>
+<li><a class="reference internal" href="#extras-simplify-repeated-arguments">Extras: simplify repeated arguments</a></li>
+<li><a class="reference internal" href="#advanced-argument-passing">Advanced argument passing</a></li>
+<li><a class="reference internal" href="#other-execution-options">Other execution options</a></li>
+<li><a class="reference internal" href="#error-handling-the-silent-mode">Error handling &amp; the Silent mode</a></li>
+<li><a class="reference internal" href="#non-decorated-functions">Non Decorated Functions</a></li>
+<li><a class="reference internal" href="#a-quick-note-on-python-decorators">A quick note on Python decorators</a></li>
+<li><a class="reference internal" href="#the-non-blocking-async-api">The Non-Blocking (async) API</a></li>
+</ul>
+</li>
+</ul>
+<h3>Navigation</h3>
+<ul>
+  <li><a href="../index.html">Overview</a>
+    <ul>
+          <li>Previous: <a href="../index.html" title="previous chapter">Parallel: Parallelism for Humans</a>
+          <li>Next: <a href="quickstart-multiple-functions.html" title="next chapter">Quickstart: Run multiple functions in parallel</a>
+    </ul>
+  </li>
+</ul>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Santiago Basulto.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.
+    </div>
+  <script type="text/javascript" src="../_static/version_warning_offset.js"></script>
+
+  </body>
+</html>

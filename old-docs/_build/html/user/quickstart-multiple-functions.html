@@ -1,0 +1,263 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Quickstart: Run multiple functions in parallel &#8212; Parallel 0.0.1 documentation</title>
+    <link rel="stylesheet" href="../_static/flask.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Quickstart: Parallelize a function with multiple executions" href="quickstart-same-function.html" />
+  <script>DOCUMENTATION_OPTIONS.URL_ROOT = '../';</script>
+   
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="quickstart-same-function.html" title="Quickstart: Parallelize a function with multiple executions"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">Parallel 0.0.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="quickstart-run-multiple-functions-in-parallel">
+<h1>Quickstart: Run multiple functions in parallel<a class="headerlink" href="#quickstart-run-multiple-functions-in-parallel" title="Permalink to this headline">¶</a></h1>
+<p><strong>Important:</strong> Most of the examples in this document are written using the
+<strong>Blocking API</strong> and <strong>decorated</strong> function style. At the end of this doc
+there are examples of both, <strong>non-decorated</strong> functions and the
+<strong>Non Blocking API</strong>.</p>
+<div class="section" id="the-basics">
+<h2>The basics<a class="headerlink" href="#the-basics" title="Permalink to this headline">¶</a></h2>
+<p>“Multiple functions” refers to the use case of invoking multiple <strong>different</strong>
+functions in parallel. Here’s an example of a simple <a class="reference external" href="https://www.djangoproject.com/">Django</a>
+view that displays the price of Bitcoin from multiple exchanges:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@parallel</span><span class="o">.</span><span class="n">decorated</span>
+<span class="k">def</span> <span class="nf">get_price_bitstamp</span><span class="p">(</span><span class="n">crypto</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="nd">@parallel</span><span class="o">.</span><span class="n">decorated</span>
+<span class="k">def</span> <span class="nf">get_price_bitfinex</span><span class="p">(</span><span class="n">crypto</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="nd">@parallel</span><span class="o">.</span><span class="n">decorated</span>
+<span class="k">def</span> <span class="nf">get_price_coinbase</span><span class="p">(</span><span class="n">crypto</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="n">prices</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">par</span><span class="p">({</span>
+        <span class="s1">&#39;stamp&#39;</span><span class="p">:</span> <span class="n">get_price_bitstamp</span><span class="o">.</span><span class="n">future</span><span class="p">(</span><span class="n">crypto</span><span class="o">=</span><span class="s1">&#39;BTC&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;finex&#39;</span><span class="p">:</span> <span class="n">get_price_bitfinex</span><span class="o">.</span><span class="n">future</span><span class="p">(</span><span class="n">crypto</span><span class="o">=</span><span class="s1">&#39;BTC&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;base&#39;</span><span class="p">:</span> <span class="n">get_price_coinbase</span><span class="o">.</span><span class="n">future</span><span class="p">(</span><span class="n">crypto</span><span class="o">=</span><span class="s1">&#39;BTC&#39;</span><span class="p">),</span>
+    <span class="p">})</span>
+
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="p">{</span>
+        <span class="s1">&#39;prices&#39;</span><span class="p">:</span> <span class="n">prices</span>
+    <span class="p">})</span>
+</pre></div>
+</div>
+<p>Template code:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">ul</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="n">Bitstamp</span><span class="p">:</span> <span class="p">{{</span> <span class="n">prices</span><span class="o">.</span><span class="n">stamp</span> <span class="p">}}</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="n">BitFinex</span><span class="p">:</span> <span class="p">{{</span> <span class="n">prices</span><span class="o">.</span><span class="n">finex</span> <span class="p">}}</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">li</span><span class="o">&gt;</span><span class="n">Coinbase</span><span class="p">:</span> <span class="p">{{</span> <span class="n">prices</span><span class="o">.</span><span class="n">base</span> <span class="p">}}</span><span class="o">&lt;/</span><span class="n">li</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">ul</span><span class="o">&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="running-the-original-function-verbatim">
+<h2>Running the original function verbatim<a class="headerlink" href="#running-the-original-function-verbatim" title="Permalink to this headline">¶</a></h2>
+<p>Parallel will not modify the original function, which can be invoked normally:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">stamp_price</span> <span class="o">=</span> <span class="n">get_price_bitstamp</span><span class="p">(</span><span class="n">crypto</span><span class="o">=</span><span class="s1">&#39;BTC&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="sequential-or-named-executions">
+<h2>Sequential or named executions<a class="headerlink" href="#sequential-or-named-executions" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">parallel.par</span></code> accepts both a dictionary or a sequence (a list) of functions
+to execute in parallel. Here’s a sequential example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prices</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">par</span><span class="p">([</span>
+    <span class="n">get_price_bitstamp</span><span class="o">.</span><span class="n">future</span><span class="p">(</span><span class="n">crypto</span><span class="o">=</span><span class="s1">&#39;BTC&#39;</span><span class="p">),</span>
+    <span class="n">get_price_bitfinex</span><span class="o">.</span><span class="n">future</span><span class="p">(</span><span class="n">crypto</span><span class="o">=</span><span class="s1">&#39;BTC&#39;</span><span class="p">),</span>
+    <span class="n">get_price_coinbase</span><span class="o">.</span><span class="n">future</span><span class="p">(</span><span class="n">crypto</span><span class="o">=</span><span class="s1">&#39;BTC&#39;</span><span class="p">),</span>
+<span class="p">])</span>
+
+<span class="n">prices</span> <span class="o">==</span> <span class="p">[</span><span class="mf">7800.20</span><span class="p">,</span> <span class="mf">7821.89</span><span class="p">,</span> <span class="mf">7789.32</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="passing-parameters">
+<h2>Passing parameters<a class="headerlink" href="#passing-parameters" title="Permalink to this headline">¶</a></h2>
+<p>The recommended way to pass functions you want to run to <code class="docutils literal notranslate"><span class="pre">parallel.par</span></code> is
+with the helper <code class="docutils literal notranslate"><span class="pre">&lt;function&gt;.future</span></code> which also works works with not decorated
+functions. Let’s see a complete example for both cases:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@parallel</span><span class="o">.</span><span class="n">decorated</span>
+<span class="k">def</span> <span class="nf">get_price_bitstamp</span><span class="p">(</span><span class="n">crypto</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="s1">&#39;5m&#39;</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="c1"># Not Decorated!</span>
+<span class="k">def</span> <span class="nf">get_price_bitfinex</span><span class="p">(</span><span class="n">crypto</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="s1">&#39;5m&#39;</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">parallel</span><span class="o">.</span><span class="n">par</span><span class="p">([</span>
+    <span class="n">get_price_bitstamp</span><span class="o">.</span><span class="n">future</span><span class="p">(</span><span class="s1">&#39;BTC&#39;</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="s1">&#39;10m&#39;</span><span class="p">),</span>
+    <span class="c1"># not decorated function:</span>
+    <span class="n">parallel</span><span class="o">.</span><span class="n">future</span><span class="p">(</span><span class="n">get_price_bitfinex</span><span class="p">,</span> <span class="s1">&#39;BTC&#39;</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="s1">&#39;10m&#39;</span><span class="p">)</span>
+<span class="p">])</span>
+</pre></div>
+</div>
+<p>Alternatively, you can pass the functions as tuples in the form:
+<code class="docutils literal notranslate"><span class="pre">([function</span> <span class="pre">or</span> <span class="pre">callable],</span> <span class="pre">arg1,</span> <span class="pre">arg2,</span> <span class="pre">...,</span> <span class="pre">{'kwarg1':</span> <span class="pre">val,</span> <span class="pre">...})</span></code>.
+Let’s see an example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">parallel</span><span class="o">.</span><span class="n">par</span><span class="p">([</span>
+    <span class="p">(</span><span class="n">get_price_bitstamp</span><span class="p">,</span> <span class="s1">&#39;BTC&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;period&#39;</span><span class="p">:</span> <span class="s1">&#39;10m&#39;</span><span class="p">}),</span>
+    <span class="p">(</span><span class="n">get_price_bitfinex</span><span class="p">,</span> <span class="s1">&#39;BTC&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;period&#39;</span><span class="p">:</span> <span class="s1">&#39;10m&#39;</span><span class="p">}),</span>
+<span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="extras-simplify-repeated-arguments">
+<h2>Extras: simplify repeated arguments<a class="headerlink" href="#extras-simplify-repeated-arguments" title="Permalink to this headline">¶</a></h2>
+<p>If there are arguments repeated for every execution, you can avoid the
+repetition by placing it in the <code class="docutils literal notranslate"><span class="pre">extras</span></code> section. This is how it looks
+refactoring the code from the previous example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">parallel</span><span class="o">.</span><span class="n">par</span><span class="p">([</span>
+    <span class="p">(</span><span class="n">get_price_bitstamp</span><span class="p">,</span> <span class="s1">&#39;BTC&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">get_price_bitfinex</span><span class="p">,</span> <span class="s1">&#39;BTC&#39;</span><span class="p">),</span>
+<span class="p">],</span> <span class="n">extras</span><span class="o">=</span><span class="p">{</span>
+    <span class="s1">&#39;period&#39;</span><span class="p">:</span> <span class="s1">&#39;10m&#39;</span>
+<span class="p">})</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="other-execution-options">
+<h2>Other execution options<a class="headerlink" href="#other-execution-options" title="Permalink to this headline">¶</a></h2>
+<p>You can control other options like <code class="docutils literal notranslate"><span class="pre">timeout</span></code> and <code class="docutils literal notranslate"><span class="pre">max_workers</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">parallel</span><span class="o">.</span><span class="n">par</span><span class="p">([</span>
+    <span class="n">get_price_bitstamp</span><span class="o">.</span><span class="n">future</span><span class="p">(</span><span class="s1">&#39;BTC&#39;</span><span class="p">),</span>
+    <span class="n">get_price_bitfinex</span><span class="o">.</span><span class="n">future</span><span class="p">(</span><span class="s1">&#39;BTC&#39;</span><span class="p">),</span>
+<span class="p">],</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">max_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="error-handling-the-silent-mode">
+<h2>Error handling &amp; the Silent mode<a class="headerlink" href="#error-handling-the-silent-mode" title="Permalink to this headline">¶</a></h2>
+<p>By default, if an exception is raised in any of the parallel executions,
+the whole parallel call will fail and propagate that exception.
+There’s also a <em>silent</em> mode that can be activated, that will catch all
+the exceptions raised and return the tasks that didn’t fail:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">prices</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">par</span><span class="p">({</span>
+    <span class="s1">&#39;stamp&#39;</span><span class="p">:</span> <span class="n">get_price_bitstamp</span><span class="o">.</span><span class="n">future</span><span class="p">(</span><span class="s1">&#39;BTC&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;finex&#39;</span><span class="p">:</span> <span class="n">get_price_bitfinex</span><span class="o">.</span><span class="n">future</span><span class="p">(</span><span class="s1">&#39;BTC&#39;</span><span class="p">,</span> <span class="n">period</span><span class="o">=</span><span class="s1">&#39;5m&#39;</span><span class="p">),</span>  <span class="c1"># FAILS!</span>
+    <span class="s1">&#39;base&#39;</span><span class="p">:</span> <span class="n">get_price_coinbase</span><span class="o">.</span><span class="n">future</span><span class="p">(</span><span class="s1">&#39;BTC&#39;</span><span class="p">),</span>
+<span class="p">},</span> <span class="n">silent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Check if something failed</span>
+<span class="n">prices</span><span class="o">.</span><span class="n">failures</span> <span class="o">==</span> <span class="kc">True</span>
+
+<span class="c1"># The tasks that didn&#39;t fail are available</span>
+<span class="n">prices</span><span class="o">.</span><span class="n">succeeded</span> <span class="o">==</span> <span class="p">{</span>
+    <span class="s1">&#39;stamp&#39;</span><span class="p">:</span> <span class="mf">7800.20</span><span class="p">,</span>
+    <span class="s1">&#39;base&#39;</span><span class="p">:</span> <span class="mf">7789.32</span>
+<span class="p">}</span>
+
+<span class="n">results</span><span class="o">.</span><span class="n">failed</span> <span class="o">==</span> <span class="p">{</span>
+    <span class="s1">&#39;finex&#39;</span><span class="p">:</span> <span class="n">parallel</span><span class="o">.</span><span class="n">FailedTask</span><span class="p">(</span>
+        <span class="n">params</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;BTC&#39;</span><span class="p">,),</span>
+        <span class="n">kwargs</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;period&#39;</span><span class="p">:</span> <span class="s1">&#39;5m&#39;</span><span class="p">}</span>
+        <span class="n">ex</span><span class="o">=</span><span class="n">requests</span><span class="o">.</span><span class="n">ConnectionError</span><span class="p">(</span><span class="s1">&#39;&lt;redacted&gt; Error message&#39;</span><span class="p">)</span>
+    <span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="the-non-blocking-async-api">
+<h2>The Non-Blocking (async) API<a class="headerlink" href="#the-non-blocking-async-api" title="Permalink to this headline">¶</a></h2>
+<p>Parallel also includes a <em>Non Blocking API</em>, which starts the execution of
+the tasks and returns immediately. Here’s an example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">functions</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;stamp&#39;</span><span class="p">:</span> <span class="n">get_price_bitstamp</span><span class="o">.</span><span class="n">future</span><span class="p">(</span><span class="s1">&#39;BTC&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;finex&#39;</span><span class="p">:</span> <span class="n">get_price_bitfinex</span><span class="o">.</span><span class="n">future</span><span class="p">(</span><span class="s1">&#39;BTC&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;base&#39;</span><span class="p">:</span> <span class="n">get_price_coinbase</span><span class="o">.</span><span class="n">future</span><span class="p">(</span><span class="s1">&#39;BTC&#39;</span><span class="p">),</span>
+<span class="p">}</span>
+<span class="k">with</span> <span class="n">parallel</span><span class="o">.</span><span class="n">async_par</span><span class="p">(</span><span class="n">functions</span><span class="p">,</span> <span class="n">max_workers</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+    <span class="c1"># do something here</span>
+    <span class="n">prices</span> <span class="o">=</span> <span class="n">ex</span><span class="o">.</span><span class="n">results</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+  <span id="sidebar-top"></span>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  
+    
+  
+
+  <h3>Contents</h3>
+  <ul>
+<li><a class="reference internal" href="#">Quickstart: Run multiple functions in parallel</a><ul>
+<li><a class="reference internal" href="#the-basics">The basics</a></li>
+<li><a class="reference internal" href="#running-the-original-function-verbatim">Running the original function verbatim</a></li>
+<li><a class="reference internal" href="#sequential-or-named-executions">Sequential or named executions</a></li>
+<li><a class="reference internal" href="#passing-parameters">Passing parameters</a></li>
+<li><a class="reference internal" href="#extras-simplify-repeated-arguments">Extras: simplify repeated arguments</a></li>
+<li><a class="reference internal" href="#other-execution-options">Other execution options</a></li>
+<li><a class="reference internal" href="#error-handling-the-silent-mode">Error handling &amp; the Silent mode</a></li>
+<li><a class="reference internal" href="#the-non-blocking-async-api">The Non-Blocking (async) API</a></li>
+</ul>
+</li>
+</ul>
+<h3>Navigation</h3>
+<ul>
+  <li><a href="../index.html">Overview</a>
+    <ul>
+          <li>Previous: <a href="quickstart-same-function.html" title="previous chapter">Quickstart: Parallelize a function with multiple executions</a>
+          
+    </ul>
+  </li>
+</ul>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Santiago Basulto.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.
+    </div>
+  <script type="text/javascript" src="../_static/version_warning_offset.js"></script>
+
+  </body>
+</html>

@@ -1,0 +1,70 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v3.8.5">
+    <title>Table</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <style media="screen">
+      .row{
+        /*text-align: center;*/
+        border: 1px black solid;
+      }
+      .level_0-function-type{
+        height: 500px;
+      }
+      .level_1-decorated-type{
+        height: 250px;
+      }
+      .level_2-blocking-type{
+        height: 125px;
+      }
+    </style>
+
+    <style>
+    </style>
+  </head>
+  <body>
+
+    <main role="main" class="container-fluid">
+
+      <div class="row level_0-function-type"> <!-- Level 1 -->
+        <div class="col my-auto">Same Func</div>
+        <div class="col"> <!-- Level 2 -->
+          <div class="row level_1-decorated-type">
+            <div class="col my-auto">Decorated</div>
+          </div>
+          <div class="row level_1-decorated-type">
+            <div class="col my-auto">Non Decorated</div>
+          </div>
+        </div>
+        <div class="col">
+          <div class="row level_2-blocking-type">
+            <div class="col my-auto"><a href="https://carbon.now.sh/?bg=rgba(171%2C%20184%2C%20195%2C%201)&t=one-dark&wt=none&l=python&ds=true&dsyoff=20px&dsblur=68px&wc=true&wa=false&pv=48px&ph=32px&ln=true&fm=Hack&fs=14px&lh=133%25&si=false&es=4x&wm=false&code=%2540parallel.decorate%250Adef%2520download_and_store(url)%253A%250A%2520%2520%2520%2520resp%2520%253D%2520requests.get(url)%250A%2520%2520%2520%2520result%2520%253D%2520store_in_db(resp.json())%250A%2520%2520%2520%2520return%2520result%250A%250Aurls%2520%253D%2520%255B%250A%2520%2520%2520%2520%27https%253A%252F%252Fpython.org%27%252C%250A%2520%2520%2520%2520%27https%253A%252F%252Fpython-requests.com%27%252C%250A%2520%2520%2520%2520%27https%253A%252F%252Frmotr.com%27%250A%255D%250A%250A%2523%2520Parallel%2520in%2520Action%253A%250Aresults%2520%253D%2520download_and_store.map(%250A%2520%2520%2520%2520urls%252C%250A%2509max_workers%253D5%252C%250A%2509timeout%253D10)%250A%250Aresults%2520%253D%253D%2520%255B%27python%27%252C%2520%27requests%27%252C%2520%27rmotr%27%255D" target="_blank">Blocking</a></div>
+          </div>
+          <div class="row level_2-blocking-type">
+            <div class="col my-auto"><a href="https://carbon.now.sh/?bg=rgba(171%2C%20184%2C%20195%2C%201)&t=one-dark&wt=none&l=python&ds=true&dsyoff=20px&dsblur=68px&wc=true&wa=false&pv=48px&ph=32px&ln=true&fm=Hack&fs=14px&lh=133%25&si=false&es=4x&wm=false&code=%2540parallel.decorate%250Adef%2520download_and_store(url)%253A%250A%2520%2520%2520%2520resp%2520%253D%2520requests.get(url)%250A%2520%2520%2520%2520result%2520%253D%2520store_in_db(resp.json())%250A%2520%2520%2520%2520return%2520result%250A%250Ahandle%2520%253D%2520download_and_store.async_map(%250A%2520%2520%2520%2520urls%252C%250A%2520%2520%2509max_workers%253D5%252C%250A%2520%2520%2520%2520silent%253DTrue)%250A%250Aresults%2520%253D%2520handle.join(timeout%253D10)%250A%250Aresults%2520%253D%253D%2520%255B%27python%27%252C%2520%27requests%27%252C%2520%27rmotr%27%255D" target="_blank">Non Blocking</a></div>
+          </div>
+          <div class="row level_2-blocking-type">
+            <div class="col my-auto"><a href="https://carbon.now.sh/?bg=rgba(171%2C%20184%2C%20195%2C%201)&t=one-dark&wt=none&l=python&ds=true&dsyoff=20px&dsblur=68px&wc=true&wa=false&pv=48px&ph=32px&ln=true&fm=Hack&fs=14px&lh=133%25&si=false&es=4x&wm=false&code=import%2520parallel%250A%250Adef%2520download_and_store(url)%253A%250A%2520%2520%2520%2520resp%2520%253D%2520requests.get(url)%250A%2520%2520%2520%2520result%2520%253D%2520store_in_db(resp.json())%250A%2520%2520%2520%2520return%2520result%250A%250A%250Aresults%2520%253D%2520parallel.map(download_and_store%252C%2520urls%252C%250A%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520max_workers%253D5%252C%2520timeout%253D10)%250A%250Aresults%2520%253D%253D%2520%255B%27python%27%252C%2520%27requests%27%252C%2520%27rmotr%27%255D" target="_blank">Blocking</a></div>
+          </div>
+          <div class="row level_2-blocking-type">
+            <div class="col my-auto"><a href="https://carbon.now.sh/?bg=rgba(171%2C%20184%2C%20195%2C%201)&t=one-dark&wt=none&l=python&ds=true&dsyoff=20px&dsblur=68px&wc=true&wa=false&pv=48px&ph=32px&ln=true&fm=Hack&fs=14px&lh=133%25&si=false&es=4x&wm=false&code=import%2520parallel%250A%250Adef%2520download_and_store(url)%253A%250A%2520%2520%2520%2520resp%2520%253D%2520requests.get(url)%250A%2520%2520%2520%2520result%2520%253D%2520store_in_db(resp.json())%250A%2520%2520%2520%2520return%2520result%250A%250A%250Ahandle%2520%253D%2520parallel.async_map(download_and_store%252C%2520urls%252C%250A%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520%2520max_workers%253D5%252C%2520silent%253DTrue)%250A%250Aresults%2520%253D%2520handle.join(timeout%253D10)%250A%250Aresults%2520%253D%253D%2520%255B%27python%27%252C%2520%27requests%27%252C%2520%27rmotr%27%255D" target="_blank">Non Blocking</a></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col">Multiple Func</div>
+      </div>
+
+    </main><!-- /.container -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+</html>

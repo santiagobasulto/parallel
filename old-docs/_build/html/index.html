@@ -1,0 +1,262 @@
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Parallel: Parallelism for Humans &#8212; Parallel 0.0.1 documentation</title>
+    <link rel="stylesheet" href="_static/flask.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Quickstart: Parallelize a function with multiple executions" href="user/quickstart-same-function.html" />
+  <script>DOCUMENTATION_OPTIONS.URL_ROOT = './';</script>
+   
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="user/quickstart-same-function.html" title="Quickstart: Parallelize a function with multiple executions"
+             accesskey="N">next</a> |</li>
+        <li class="nav-item nav-item-0"><a href="#">Parallel 0.0.1 documentation</a> &#187;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="parallel-parallelism-for-humans">
+<h1>Parallel: Parallelism for Humans<a class="headerlink" href="#parallel-parallelism-for-humans" title="Permalink to this headline">¶</a></h1>
+<p>Release v0.0.1.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>❤️ Feature requests and questions are WELCOME ❤️</strong>.</p>
+<p>Parallel is in early stage and your input is highly appreciated.</p>
+<p>Questions or ideas? Create <a class="reference external" href="https://github.com/santiagobasulto/parallel/issues">an issue</a>.</p>
+</div>
+<p><cite>parallel</cite> makes the process of writing parallel code simple and enjoyable,
+bringing parallelism <strong>closer to humans</strong>. <cite>parallel</cite> is <strong>NOT</strong> a pipeline library (check <a class="reference external" href="https://dask.org/">Dask</a> or
+<a class="reference external" href="https://github.com/spotify/luigi">Luigi</a> for that).</p>
+<p><cite>parallel</cite> is inspired (and perfectly summarized) by
+<a class="reference external" href="https://docs.scala-lang.org/overviews/parallel-collections/overview.html">Scala’s parallel collections</a>:</p>
+<blockquote>
+<div><p>An effort to facilitate parallel programming by
+<em>sparing users from low-level parallelization details</em>, meanwhile providing
+them with a familiar and simple high-level abstraction.</p>
+<p>The hope was, and still is, that implicit parallelism behind
+a high-level abstraction will bring <em>reliable parallel execution one step
+closer to the workflow of mainstream developers</em>.</p>
+</div></blockquote>
+<p><cite>parallel</cite> lets you create instant, parallelizable functions with
+amazing simplicity:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@parallel</span><span class="o">.</span><span class="n">decorate</span>
+<span class="k">def</span> <span class="nf">download_and_store</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">store_in_db</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+<span class="n">urls</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;https://python.org&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;https://python-requests.com&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;https://rmotr.com&#39;</span>
+<span class="p">]</span>
+<span class="c1"># instant parallelism (Threads used by default)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">download_and_store</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">urls</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">max_workers</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Parallel includes a simple way to switch between
+multithreading and multiprocessing:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Using the default executor (thread)</span>
+<span class="c1"># (can be configured when writing the function)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">download_and_store</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">urls</span><span class="p">)</span>
+
+<span class="c1"># Add `.thread` to use multithreading</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">download_and_store</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">urls</span><span class="p">)</span>
+
+<span class="c1"># Add `.process` to use multiprocessing</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">download_and_store</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">urls</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Warning:</strong> Multiprocessing support is in alpha stage. I had to rewrite a
+module similar to <cite>concurrent.futures</cite> because pickling doesn’t work with
+decorated functions.</p>
+<p>Decorating your function won’t affect its regular behavior.
+The decorated function can still be used normally:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">res</span> <span class="o">=</span> <span class="n">download_and_store</span><span class="p">(</span><span class="s1">&#39;https://rmotr.com&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Existing functions (not decorated), can also be parallelized with
+the same simplicity:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">download_and_store</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="c1"># Same function as before, not decorated</span>
+    <span class="k">pass</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">download_and_store</span><span class="p">,</span> <span class="n">urls</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="non-blocking-api">
+<h2>Non Blocking API<a class="headerlink" href="#non-blocking-api" title="Permalink to this headline">¶</a></h2>
+<p>Parallel also includes a non Blocking API, with similar simplicity:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;python&#39;</span><span class="p">:</span> <span class="s1">&#39;https://python.org&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;RMOTR&#39;</span><span class="p">:</span> <span class="s1">&#39;https://rmotr.org&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="k">with</span> <span class="n">download_and_store</span><span class="o">.</span><span class="n">async_map</span><span class="p">(</span><span class="n">params</span><span class="p">)</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+    <span class="c1"># do something else here, when ready, ask for results</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">executers</span><span class="o">.</span><span class="n">results</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="n">results</span><span class="p">[</span><span class="s1">&#39;python&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="parallelizing-multiple-functions">
+<h2>Parallelizing Multiple functions<a class="headerlink" href="#parallelizing-multiple-functions" title="Permalink to this headline">¶</a></h2>
+<p>Parallel can also be used to run multiple <strong>different functions</strong> in parallel,
+with advanced argument passing and a simplified API:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@parallel</span><span class="o">.</span><span class="n">decorate</span>
+<span class="k">def</span> <span class="nf">sum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span>
+
+<span class="nd">@parallel</span><span class="o">.</span><span class="n">decorate</span>
+<span class="k">def</span> <span class="nf">multiply</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">*</span> <span class="n">b</span>
+
+<span class="nd">@parallel</span><span class="o">.</span><span class="n">decorate</span>
+<span class="k">def</span> <span class="nf">square</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">pretty</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">a</span> <span class="o">**</span> <span class="mi">2</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">par</span><span class="p">([</span>
+    <span class="nb">sum</span><span class="o">.</span><span class="n">future</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="n">multiply</span><span class="o">.</span><span class="n">future</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+    <span class="n">square</span><span class="o">.</span><span class="n">future</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">pretty</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="p">])</span>
+<span class="n">results</span> <span class="o">==</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">25</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Functions that are not decorated can be passed as tuples, or using the
+<code class="docutils literal notranslate"><span class="pre">parallel.future</span></code> helper:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">par</span><span class="p">([</span>
+    <span class="p">(</span><span class="nb">sum</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">multiply</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span>
+    <span class="p">(</span><span class="n">square</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;pretty&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}),</span>
+
+    <span class="c1"># instead of passing tuples, use `future`s:</span>
+    <span class="n">parallel</span><span class="o">.</span><span class="n">future</span><span class="p">(</span><span class="nb">sum</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+    <span class="n">parallel</span><span class="o">.</span><span class="n">future</span><span class="p">(</span><span class="n">square</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">pretty</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span>
+<span class="p">])</span>
+<span class="n">results</span> <span class="o">==</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">25</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>There’s far more to Parallel than what we’ve just shown, a few examples:</p>
+<ul class="simple">
+<li><p><cite>*args</cite>, and <cite>**kwargs</cite> function arguments (knwon shortcoming of <code class="docutils literal notranslate"><span class="pre">concurrent.futures</span></code>)</p></li>
+<li><p>Error handling and recovering</p></li>
+<li><p>Automatic retries</p></li>
+<li><p>A non-blocking API</p></li>
+<li><p>Parallelism with multiprocessing or multithreading</p></li>
+</ul>
+<p>—</p>
+<p>Refer to the following quickstart guides:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="user/quickstart-same-function.html">Quickstart: Parallelize a function with multiple executions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="user/quickstart-same-function.html#the-basics">The basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/quickstart-same-function.html#running-the-original-function-verbatim">Running the original function verbatim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/quickstart-same-function.html#named-executions-using-dictionaries">Named executions (using dictionaries)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/quickstart-same-function.html#passing-multiple-parameters">Passing multiple parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/quickstart-same-function.html#passing-named-arguments">Passing Named Arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/quickstart-same-function.html#extras-simplify-repeated-arguments">Extras: simplify repeated arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/quickstart-same-function.html#advanced-argument-passing">Advanced argument passing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/quickstart-same-function.html#other-execution-options">Other execution options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/quickstart-same-function.html#error-handling-the-silent-mode">Error handling &amp; the Silent mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/quickstart-same-function.html#non-decorated-functions">Non Decorated Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/quickstart-same-function.html#a-quick-note-on-python-decorators">A quick note on Python decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/quickstart-same-function.html#the-non-blocking-async-api">The Non-Blocking (async) API</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="user/quickstart-multiple-functions.html">Quickstart: Run multiple functions in parallel</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="user/quickstart-multiple-functions.html#the-basics">The basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/quickstart-multiple-functions.html#running-the-original-function-verbatim">Running the original function verbatim</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/quickstart-multiple-functions.html#sequential-or-named-executions">Sequential or named executions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/quickstart-multiple-functions.html#passing-parameters">Passing parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/quickstart-multiple-functions.html#extras-simplify-repeated-arguments">Extras: simplify repeated arguments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/quickstart-multiple-functions.html#other-execution-options">Other execution options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/quickstart-multiple-functions.html#error-handling-the-silent-mode">Error handling &amp; the Silent mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/quickstart-multiple-functions.html#the-non-blocking-async-api">The Non-Blocking (async) API</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>Quick functionality matrix summary:</p>
+<img alt="_images/parallel_matrix.png" src="_images/parallel_matrix.png" />
+<div class="toctree-wrapper compound">
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+  <span id="sidebar-top"></span>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  
+    
+  
+
+  <h3>Contents</h3>
+  <ul>
+<li><a class="reference internal" href="#">Parallel: Parallelism for Humans</a><ul>
+<li><a class="reference internal" href="#non-blocking-api">Non Blocking API</a></li>
+<li><a class="reference internal" href="#parallelizing-multiple-functions">Parallelizing Multiple functions</a><ul>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h3>Navigation</h3>
+<ul>
+  <li><a href="#">Overview</a>
+    <ul>
+          
+          <li>Next: <a href="user/quickstart-same-function.html" title="next chapter">Quickstart: Parallelize a function with multiple executions</a>
+    </ul>
+  </li>
+</ul>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+  
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2019, Santiago Basulto.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.2.2.
+    </div>
+  <script type="text/javascript" src="_static/version_warning_offset.js"></script>
+
+  </body>
+</html>
