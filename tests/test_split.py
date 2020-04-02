@@ -32,6 +32,16 @@ def test_split_simple():
     assert results == [1, 4, 9, 16, 25]
 
 
+def test_split_simple_thread_process():
+    records = [1, 2, 3, 4]
+    results = parallel.thread.split(records, process_records_simple, workers=2)
+    assert results == [1, 4, 9, 16]
+
+    records = [1, 2, 3, 4, 5]
+    results = parallel.process.split(records, process_records_simple, workers=2)
+    assert results == [1, 4, 9, 16, 25]
+
+
 def test_split_simple_verify_order():
     records = ['a', 'b', 'c', 'd']
     results = parallel.split(records, process_records_simple_sleep, workers=2)

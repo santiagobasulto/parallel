@@ -11,4 +11,4 @@ install:
   - poetry install -v
 
 script:
-  - PYTHONPATH=. py.test -s -n 8 --cov=parallel --cov-report term-missing tests/
+  - PYTHONPATH=. py.test -s -n 8 --cov=parallel --cov-report term-missing --cov-fail-under=95 tests/
