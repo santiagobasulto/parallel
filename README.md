@@ -8,6 +8,11 @@
 
 <h4 align="center">Instant multi-thread/multi-process parallelism for Python ✨</h4>
 
+<p align="center">
+  <a href="https://travis-ci.org/github/santiagobasulto/parallel">
+    <img src="https://img.shields.io/travis/santiagobasulto/parallel" alt="Travis Builds" />
+  </a>
+</p>
 
 **Important**: `parallel` is in an early stage. All questions and suggestions are welcome. Check the section [#Contributing](#Contributing) below or [submit an issue](https://github.com/santiagobasulto/parallel/issues).
 

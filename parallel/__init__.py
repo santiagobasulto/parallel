@@ -1,199 +1,111 @@
+import enum
+
 import functools
+import itertools
 import collections
 import concurrent.futures as cf
+
 from . import errors
+from . import utils
 from . import exceptions
-
-__all__ = ["decorate", "arg", "future", "map", "async_map", "par", "async_par"]
-
-__version__ = '0.0.2'
-__author__ = 'Santiago Basulto <santiago.basulto@gmail.com>'
-
-THREAD = "thread"
-PROCESS = "process"
-
-
-class FailedTask:
-    def __init__(self, params=None, kwargs=None, ex=Exception):
-        self.params = params
-        self.kwargs = kwargs or {}
-        self.ex = ex
-
-    def __eq__(self, other):
-        if type(self) != type(other):
-            return False
-        return (
-            self.params == other.params
-            and self.kwargs == other.kwargs
-            and self.ex == other.ex
-        )
-
-    def __repr__(self):
-        return "FailedTask(params={}, kwargs={}, ex={})".format(
-            self.params, self.kwargs, self.ex.__class__)
+from .models import (
+    ParallelJob,
+    ParallelArg,
+    ParallelStatus,
+    FailedTask,
+    SequentialMapResult,
+    NamedMapResult,
+)
 
 
-class ParallelJob:
-    def __init__(self, name, fn, *args, **kwargs):
-        self.name = name
-        self.fn = fn
-        self.args = args
-        self.kwargs = kwargs
+# __all__ = ["decorate", "arg", "future", "map", "async_map", "par", "async_par"]
+__all__ = ["map", "async_map", "par", "async_par"]
 
-    def __eq__(self, other):
-        return (
-            self.name == other.name
-            and self.fn == other.fn
-            and self.args == other.args
-            and self.kwargs == other.kwargs
-        )
-
-    @classmethod
-    def normalize(cls, name, fn, params, extras=None, unpack_arguments=True):
-        kwargs = (extras or {}).copy()
-        if isinstance(params, cls):
-            args = params.args
-            kwargs.update(params.kwargs)
-            return cls(params.name or name, params.fn or fn, *args, **kwargs)
-        if isinstance(params, tuple) or isinstance(params, list):
-            if not unpack_arguments:
-                return cls(name, fn, params, **kwargs)
-            args = []
-            for param in params:
-                if type(param) == dict:
-                    kwargs.update(param)
-                else:
-                    args.append(param)
-            return cls(name, fn, *args, **kwargs)
-        if isinstance(params, dict):
-            return cls(name, fn, **{**params, **kwargs})
-        return cls(name, fn, params)
+__version__ = "0.0.2"
+__author__ = "Santiago Basulto <santiago.basulto@gmail.com>"
 
 
-class BaseResult:
-    def new_result(self, name, result):
-        raise NotImplementedError()
-
-    @property
-    def failures(self):
-        raise NotImplementedError()
-
-    @property
-    def succeeded(self):
-        raise NotImplementedError()
-
-    @property
-    def failed(self):
-        raise NotImplementedError()
-
-    def replace_failed(self, replacement):
-        raise NotImplementedError()
+class ExecutorStrategy(enum.Enum):
+    THREAD_EXECUTOR = "thread"
+    PROCESS_EXECUTOR = "process"
 
 
-class SequentialMapResult(BaseResult, list):
-    def new_result(self, name, result):
-        self.append(result)
-
-    @property
-    def failures(self):
-        return bool([obj for obj in self if isinstance(obj, FailedTask)])
-
-    @property
-    def succeeded(self):
-        return [obj for obj in self if not isinstance(obj, FailedTask)]
-
-    @property
-    def failed(self):
-        return [obj for obj in self if isinstance(obj, FailedTask)]
-
-    def replace_failed(self, replacement):
-        return [replacement if isinstance(obj, FailedTask) else obj for obj in self]
-
-
-class NamedMapResult(BaseResult, dict):
-    def new_result(self, name, result):
-        self[name] = result
-
-    @property
-    def failures(self):
-        return bool([obj for obj in self.values() if isinstance(obj, FailedTask)])
-
-    @property
-    def succeeded(self):
-        return {
-            name: obj for name, obj in self.items() if not isinstance(obj, FailedTask)
-        }
-
-    @property
-    def failed(self):
-        return {name: obj for name, obj in self.items() if isinstance(obj, FailedTask)}
-
-    def replace_failed(self, replacement):
-        return {
-            name: (replacement if isinstance(obj, FailedTask) else obj)
-            for name, obj in self.items()
-        }
+THREAD_EXECUTOR = ExecutorStrategy.THREAD_EXECUTOR
+PROCESS_EXECUTOR = ExecutorStrategy.PROCESS_EXECUTOR
 
 
 class BaseParallelExecutor:
-    def __init__(self, timeout=None, max_workers=None):
-        self.jobs = None
-        self.result_class = None
-
-        self.timeout = timeout
+    def __init__(
+        self,
+        jobs,
+        max_workers=None,
+        timeout=None,
+        silent=False,
+        ResultClass=SequentialMapResult,
+    ):
+        self.jobs = jobs
         self.max_workers = max_workers
-        ExecutorClass = self._get_executor_class()
-        self._executor = ExecutorClass(max_workers=max_workers)
+        self.timeout = timeout
+        self.silent = silent
+        self.ResultClass = ResultClass
+        self.__status = ParallelStatus.NOT_STARTED
+        self.__executor = None
+        self.__results = None
 
-    def _get_executor_class(self):
+    def _get_executor_class(self):  # pragma: no cover
         raise NotImplementedError()
 
+    @property
+    def status(self):
+        return self.__status
+
+    def start(self):
+        if self.__status == ParallelStatus.STARTED:
+            raise exceptions.ParallelStatusException(errors.STATUS_EXECUTOR_RUNNING)
+        self.__status = ParallelStatus.STARTED
+
+        ExecutorClass = self._get_executor_class()
+        self.__executor = ExecutorClass(max_workers=self.max_workers)
+        for job in self.jobs:
+            future = self.__executor.submit(job.fn, *job.args, **(job.kwargs))
+            # TODO: Check status for ParallelJob
+            job.future = future
+
     def __enter__(self):
+        self.start()
         return self
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self._executor.shutdown(wait=True)
-        return False
+    def __exit__(self, *args, **kwargs):
+        self.shutdown()
 
-    def shutdown(self, wait=True):
-        self._executor.shutdown(wait)
+    def results(self, timeout=None):
+        if self.__results:
+            return self.__results
 
-    def results(self, timeout=None, silent=False):
-        assert self.jobs is not None
-        assert self.result_class is not None
-        if hasattr(self, "_cached_results"):
-            return getattr(self, "_cached_results")
+        if self.__status == ParallelStatus.NOT_STARTED:
+            raise exceptions.ParallelStatusException(errors.STATUS_EXECUTOR_NOT_STARTED)
 
-        results = self.result_class()
-        for future, function_details in self.jobs:
-            name, *function_args = function_details
+        ResultClass = self.ResultClass
+        self.__results = ResultClass()
+
+        for job in self.jobs:
             try:
-                try:
-                    results.new_result(name, future.result(timeout or self.timeout))
-                except cf.TimeoutError as e:
-                    raise exceptions.TimeoutException() from e
-            except Exception as e:
-                if not silent:
-                    raise e
-                args, kwargs = function_args
-                results.new_result(name, FailedTask(args or None, kwargs, e))
+                result = job.future.result(timeout=(timeout or self.timeout))
+            except cf.TimeoutError as e:
+                raise exceptions.TimeoutException() from e
+            except Exception as exc:
+                if not self.silent:
+                    self.__status = ParallelStatus.FAILED
+                    raise exc
+                self.__results.new_result(job.name, FailedTask(job, exc))
+            else:
+                self.__results.new_result(job.name, result)
 
-        self._cached_results = results
-        return results
+        self.__status = ParallelStatus.DONE
+        return self.__results
 
-    def submit_jobs(self, jobs, result_class):
-        assert self.jobs is None
-        assert self.result_class is None
-        futures = [
-            (
-                self._executor.submit(job.fn, *job.args, **job.kwargs),
-                (job.name, job.args, job.kwargs),
-            )
-            for job in jobs
-        ]
-
-        self.jobs = futures
-        self.result_class = result_class
+    def shutdown(self):
+        self.__executor.shutdown()
 
 
 class ThreadExecutor(BaseParallelExecutor):
@@ -206,240 +118,317 @@ class ProcessExecutor(BaseParallelExecutor):
         return cf.ProcessPoolExecutor
 
 
-class ParallelProxy:
-    def __init__(self, ExecutorClass, timeout=None, max_workers=None):
-        self.ExecutorClass = ExecutorClass
-        self.timeout = timeout
-        self.max_workers = max_workers
+EXECUTOR_MAPPING = {
+    ExecutorStrategy.THREAD_EXECUTOR: ThreadExecutor,
+    ExecutorStrategy.PROCESS_EXECUTOR: ProcessExecutor,
+}
 
-    def _normalize_options(self, timeout=None, max_workers=None):
-        return {
-            "timeout": timeout or self.timeout,
-            "max_workers": max_workers or self.max_workers,
-        }
 
-    def future(self, fn, *args, **kwargs):
-        return ParallelJob(None, fn, *args, **kwargs)
+class ParallelHelper:
+    def __init__(self, executor=ExecutorStrategy.THREAD_EXECUTOR):
+        if isinstance(executor, ExecutorStrategy):
+            executor = EXECUTOR_MAPPING[executor]
+        self.ExecutorClass = executor
 
-    def _get_result_class(self, params):
-        if isinstance(params, dict):
-            return NamedMapResult
-        return SequentialMapResult
-
-    def _normalize_parameters(self, params):
-        "Split parameters to (Name, Parameter)"
-        if isinstance(params, dict):
-            return params.items()
-        return ((None, param) for param in params)
-
-    def _split_function_parameters(self, named_params, extras):
-        for name, param in named_params:
-            if callable(param):
-                yield ParallelJob(name, param)
-            elif not isinstance(param, ParallelJob) and callable(param[0]):
-                yield ParallelJob.normalize(name, param[0], param[1:], extras)
-            else:
-                yield ParallelJob.normalize(name, None, param, extras)
-
-    def _build_jobs_for_common_function(
-        self, fn, named_params, extras, unpack_arguments
-    ):
-        jobs = (
-            ParallelJob.normalize(name, fn, param, extras, unpack_arguments)
-            for name, param in named_params
-        )
-        return jobs
-
-    def par(self, params, max_workers=None, timeout=None, extras=None, silent=False):
-        options = self._normalize_options(timeout, max_workers)
-        timeout, max_workers = options["timeout"], options["max_workers"]
-
-        result_class = self._get_result_class(params)
-        named_params = self._normalize_parameters(params)
-
-        jobs = self._split_function_parameters(named_params, extras)
-
-        with self.ExecutorClass(max_workers=max_workers) as ex:
-            ex.submit_jobs(jobs, result_class)
-            return ex.results(timeout=timeout, silent=silent)
+    def get_result_class(self, params):
+        # return SequentialMapResult
+        if isinstance(params, collections.abc.Sequence):
+            return SequentialMapResult
+        return NamedMapResult
 
     def map(
         self,
         fn,
         params,
+        extras=None,
+        unpack_arguments=True,
         max_workers=None,
         timeout=None,
-        extras=None,
         silent=False,
-        unpack_arguments=True,
     ):
-        if hasattr(self, '__decorated') and self.ExecutorClass == ProcessExecutor:
-            raise NotImplementedError(errors.DECORATED_PROCESS_FUNCTION)
-        options = self._normalize_options(timeout, max_workers)
-        timeout, max_workers = options["timeout"], options["max_workers"]
-
-        result_class = self._get_result_class(params)
-        named_params = self._normalize_parameters(params)
-        jobs = self._build_jobs_for_common_function(
-            fn, named_params, extras, unpack_arguments
+        jobs = ParallelJob.build_for_callable_from_params(
+            fn, params, extras=extras, unpack_arguments=unpack_arguments
         )
-
-        with self.ExecutorClass(timeout=timeout, max_workers=max_workers) as ex:
-            ex.submit_jobs(jobs, result_class)
-            return ex.results(timeout=timeout, silent=silent)
+        ResultClass = self.get_result_class(params)
+        with self.ExecutorClass(
+            jobs,
+            max_workers=max_workers,
+            timeout=timeout,
+            silent=silent,
+            ResultClass=ResultClass,
+        ) as ex:
+            return ex.results()
 
     def async_map(
         self,
         fn,
         params,
-        max_workers=None,
         extras=None,
-        silent=False,
         unpack_arguments=True,
+        max_workers=None,
+        timeout=None,
+        silent=False,
     ):
-        if hasattr(self, '__decorated') and self.ExecutorClass == ProcessExecutor:
-            raise NotImplementedError(errors.DECORATED_PROCESS_FUNCTION)
-        options = self._normalize_options(max_workers=max_workers)
-        timeout, max_workers = options["timeout"], options["max_workers"]
-
-        ex = self.ExecutorClass(timeout=timeout, max_workers=max_workers)
-
-        result_class = self._get_result_class(params)
-        named_params = self._normalize_parameters(params)
-        jobs = self._build_jobs_for_common_function(
-            fn, named_params, extras, unpack_arguments
+        jobs = ParallelJob.build_for_callable_from_params(
+            fn, params, extras=extras, unpack_arguments=unpack_arguments
         )
-
-        ex.submit_jobs(jobs, result_class)
+        ResultClass = self.get_result_class(params)
+        ex = self.ExecutorClass(
+            jobs,
+            max_workers=max_workers,
+            timeout=timeout,
+            silent=silent,
+            ResultClass=ResultClass,
+        )
         return ex
 
-    def async_par(self, params, max_workers=None, extras=None):
-        options = self._normalize_options(max_workers=max_workers)
-        timeout, max_workers = options["timeout"], options["max_workers"]
-
-        result_class = self._get_result_class(params)
-        named_params = self._normalize_parameters(params)
-
-        jobs = self._split_function_parameters(named_params, extras)
-
-        ex = self.ExecutorClass(timeout=timeout, max_workers=max_workers)
-        ex.submit_jobs(jobs, result_class)
-        return ex
-
-
-class BoundParallelProxy(ParallelProxy):
-    BOUND_METHODS = ['map', 'async_map', 'future']
-
-    def __init__(self, fn, *args, **kwargs):
-        self.fn = fn
-        super().__init__(*args, **kwargs)
-        for attr in self.BOUND_METHODS:
-            # self.map = functools.partial(super().map, fn)
-            setattr(self, attr, functools.partial(getattr(super(), attr), fn))
-
-
-class ParallelCallable:
-    def __init__(self, fn, ex=THREAD, timeout=None, max_workers=None):
-        assert ex in {THREAD, PROCESS}
-
-        self.fn = fn
-        self.ex = ex
-        self.timeout = timeout
-        self.max_workers = max_workers
-
-        # self.thread = ParallelProxy(
-        #     ThreadExecutor, timeout=timeout, max_workers=max_workers
-        # )
-        # self.process = ParallelProxy(
-        #     ProcessExecutor, timeout=timeout, max_workers=max_workers
-        # )
-        self.thread = BoundParallelProxy(
-            fn, ThreadExecutor, timeout=timeout, max_workers=max_workers
+    def par(
+        self,
+        params,
+        extras=None,
+        unpack_arguments=True,
+        max_workers=None,
+        timeout=None,
+        silent=False,
+    ):
+        jobs = ParallelJob.build_jobs_from_params(
+            params, extras=extras, unpack_arguments=unpack_arguments
         )
-        self.process = BoundParallelProxy(
-            fn, ProcessExecutor, timeout=timeout, max_workers=max_workers
-        )
+        ResultClass = self.get_result_class(params)
+        with self.ExecutorClass(
+            jobs,
+            max_workers=max_workers,
+            timeout=timeout,
+            silent=silent,
+            ResultClass=ResultClass,
+        ) as ex:
+            return ex.results()
 
-        default_executor = self.thread if ex == THREAD else self.process
-        self.map = default_executor.map
-        self.async_map = default_executor.async_map
-        self.future = default_executor.future
+    def split(
+        self,
+        collection,
+        fn,
+        executor=ExecutorStrategy.THREAD_EXECUTOR,
+        workers=None,
+        timeout=None,
+        extras=None,
+    ):
+        workers = workers or 4
+        chunks = utils.split_collection(collection, workers)
+        jobs = [
+            ParallelJob(fn, None, [chunk], (extras or {}).copy())
+            for chunk in chunks
+        ]
 
-        functools.update_wrapper(self, fn)
-
-    def __call__(self, *args, **kwargs):
-        return self.fn(*args, **kwargs)
-
-
-def decorate(*args, **kwargs):
-    if len(args) > 0 and callable(args[0]):
-        # Decorating function
-        obj = ParallelCallable(args[0])
-        obj.thread.__decorated = True
-        obj.process.__decorated = True
-        return obj
-    else:
-        def wrapper(fn):
-            obj = ParallelCallable(fn, *args, **kwargs)
-            obj.thread.__decorated = True
-            obj.process.__decorated = True
-            return obj
-
-        return wrapper
-
-
-# == Public Interface ==
-# (Shortcuts exposed by library)
-arg = lambda *args, **kwargs: ParallelJob(None, None, *args, **kwargs)
-arg.__doc__ = "TODO"
-
-future = lambda fn, *args, **kwargs: ParallelJob(None, fn, *args, **kwargs)
-future.__doc__ = "TODO"
-
-thread = ParallelProxy(ThreadExecutor)
-process = ParallelProxy(ProcessExecutor)
+        with self.ExecutorClass(
+            jobs,
+            max_workers=workers,
+            timeout=timeout,
+            ResultClass=SequentialMapResult,
+        ) as ex:
+            results = ex.results()
+            return list(itertools.chain.from_iterable(results))
+            #[item for sublist in l for item in sublist]
 
 
 def map(
     fn,
     params,
+    executor=ExecutorStrategy.THREAD_EXECUTOR,
     max_workers=None,
     timeout=None,
     extras=None,
     silent=False,
     unpack_arguments=True,
 ):
-    # TODO: Accept custom executor
-    return ParallelProxy(ThreadExecutor).map(
+    return ParallelHelper(executor).map(
         fn,
         params,
+        extras=extras,
+        unpack_arguments=unpack_arguments,
         max_workers=max_workers,
         timeout=timeout,
-        extras=extras,
         silent=silent,
-        unpack_arguments=unpack_arguments,
     )
 
 
-def async_map(fn, params, max_workers=None, extras=None, unpack_arguments=True):
-    # TODO: Accept custom executor
-    return ParallelProxy(ThreadExecutor).async_map(
+def async_map(
+    fn,
+    params,
+    executor=ExecutorStrategy.THREAD_EXECUTOR,
+    max_workers=None,
+    timeout=None,
+    extras=None,
+    silent=False,
+    unpack_arguments=True,
+):
+    return ParallelHelper(executor).async_map(
         fn,
         params,
-        max_workers=max_workers,
         extras=extras,
         unpack_arguments=unpack_arguments,
+        max_workers=max_workers,
+        timeout=timeout,
+        silent=silent,
     )
 
 
-def par(params, max_workers=None, timeout=None, extras=None, silent=False):
-    # TODO: Accept custom executor
-    return ParallelProxy(ThreadExecutor).par(
-        params, max_workers=max_workers, timeout=timeout, extras=extras, silent=silent
+def par(
+    params,
+    executor=ExecutorStrategy.THREAD_EXECUTOR,
+    max_workers=None,
+    timeout=None,
+    extras=None,
+    silent=False,
+    unpack_arguments=True,
+):
+    return ParallelHelper(executor).par(
+        params,
+        extras=extras,
+        unpack_arguments=unpack_arguments,
+        max_workers=max_workers,
+        timeout=timeout,
+        silent=silent,
     )
 
 
-def async_par(params, max_workers=None, extras=None):
-    # TODO: Accept custom executor
-    return ParallelProxy(ThreadExecutor).async_par(params, max_workers=max_workers, extras=extras)
+def split(
+    collection,
+    fn,
+    executor=ExecutorStrategy.THREAD_EXECUTOR,
+    workers=None,
+    timeout=None,
+    extras=None,
+):
+    return ParallelHelper(executor).split(
+        collection, fn, extras=extras, workers=workers, timeout=timeout
+    )
 
+
+class ParallelCallable:
+    def __init__(
+        self, fn, executor, timeout, max_workers,
+    ):
+
+        self.fn = fn
+        self.executor = executor
+        self.timeout = timeout
+        self.max_workers = max_workers
+
+    def map(
+        self,
+        params,
+        executor=None,
+        max_workers=None,
+        timeout=None,
+        extras=None,
+        silent=False,
+        unpack_arguments=True,
+    ):
+        executor = executor or self.executor
+        return ParallelHelper(executor).map(
+            self.fn,
+            params,
+            extras=extras,
+            unpack_arguments=unpack_arguments,
+            max_workers=(max_workers or self.max_workers),
+            timeout=(timeout or self.timeout),
+            silent=silent,
+        )
+
+    def async_map(
+        self,
+        params,
+        executor=None,
+        max_workers=None,
+        timeout=None,
+        extras=None,
+        silent=False,
+        unpack_arguments=True,
+    ):
+        executor = executor or self.executor
+        return ParallelHelper(executor).async_map(
+            self.fn,
+            params,
+            extras=extras,
+            unpack_arguments=unpack_arguments,
+            max_workers=(max_workers or self.max_workers),
+            timeout=(timeout or self.timeout),
+            silent=silent,
+        )
+
+    def __call__(self, *args, **kwargs):
+        return self.fn(*args, **kwargs)
+
+
+class ParallelDecorator:
+    def __init__(
+        self,
+        fn,
+        executor=ExecutorStrategy.THREAD_EXECUTOR,
+        timeout=None,
+        max_workers=None,
+    ):
+
+        self.fn = fn
+        self.thread = ParallelCallable(
+            fn,
+            ExecutorStrategy.THREAD_EXECUTOR,
+            timeout=timeout,
+            max_workers=max_workers,
+        )
+        self.process = ParallelCallable(
+            fn,
+            ExecutorStrategy.PROCESS_EXECUTOR,
+            timeout=timeout,
+            max_workers=max_workers,
+        )
+        if executor == ExecutorStrategy.THREAD_EXECUTOR:
+            self.default_executor = self.thread
+        else:
+            self.default_executor = self.process
+
+    map = lambda self, *args, **kwargs: self.default_executor.map(*args, **kwargs)
+
+    async_map = lambda self, *args, **kwargs: self.default_executor.async_map(
+        *args, **kwargs
+    )
+
+    def future(self, *args, **kwargs):
+        return job(self.fn, *args, **kwargs)
+
+    def __call__(self, *args, **kwargs):
+        return self.fn(*args, **kwargs)
+
+
+def decorate(*args, **kwargs):
+    if len(args) == 1 and callable(args[0]):
+        # Invoked without parameters
+        obj = ParallelDecorator(args[0])
+        return obj
+    else:
+
+        def wrapper(fn):
+            obj = ParallelDecorator(fn, *args, **kwargs)
+            return obj
+
+        return wrapper
+
+
+thread = ParallelHelper(ThreadExecutor)
+process = ParallelHelper(ProcessExecutor)
+
+arg = lambda *args, **kwargs: ParallelArg(*args, **kwargs)
+arg.__doc__ = "TODO"
+
+
+def job(*args, **kwargs):
+    "TODO"
+    fn, *args = args
+    return ParallelJob(fn, None, args, kwargs)
+
+
+NOT_STARTED = ParallelStatus.NOT_STARTED
+STARTED = ParallelStatus.STARTED
+DONE = ParallelStatus.DONE
+FAILED = ParallelStatus.FAILED

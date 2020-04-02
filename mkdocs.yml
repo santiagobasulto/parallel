@@ -1,0 +1,14 @@
+site_name: "Parallel: Concurrency for humans"
+theme:
+  name: 'material'
+  palette:
+    primary: 'blue-grey'
+    accent: 'blue-grey'
+  font:
+    text: 'Ubuntu'
+    code: 'Ubuntu Mono'
+
+markdown_extensions:
+  - admonition
+  - codehilite
+  - footnotes

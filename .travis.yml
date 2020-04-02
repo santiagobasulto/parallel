@@ -1,13 +1,14 @@
 language: python
 dist: xenial
 python:
-  - "3.5"
   - "3.6"
   - "3.7"
-  - "3.8-dev"
+  - "3.8"
 
 install:
-  - pip install -r dev-requirements.txt
+  - pip install --upgrade pip
+  - pip install poetry
+  - poetry install -v
 
 script:
-  - py.test -n 4 tests/
+  - PYTHONPATH=. py.test -s -n 8 --cov-report=xml --cov=parallel --cov-report term-missing --cov-fail-under=95 tests/
