@@ -1,3 +1,4 @@
+import os
 import enum
 
 import functools
@@ -213,7 +214,8 @@ class ParallelHelper:
         timeout=None,
         extras=None,
     ):
-        workers = workers or 4
+        workers = workers or min(32, (os.cpu_count() or 1) + 4)
+
         chunks = utils.split_collection(collection, workers)
         jobs = [
             ParallelJob(fn, None, [chunk], (extras or {}).copy())
