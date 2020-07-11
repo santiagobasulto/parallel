@@ -1,21 +1,21 @@
-`parallel` makes the process of writing parallel code simple and enjoyable, bringing parallelism **closer to humans**. `parallel` is **NOT** a pipeline library (check [Dask](https://dask.org/) or
+`parallel` makes the process of writing parallel code simple and enjoyable, bringing parallelism **closer to mainstream developers**. `parallel` is **NOT** a pipeline library (check [Dask](https://dask.org/) or
 [Luigi](https://github.com/spotify/luigi) for that).
-
-Installation (keep on reading for examples):
-```bash
-$ pip install python-parallel
-```
 
 `parallel` is inspired (and perfectly summarized) by
 [Scala's parallel collections](https://docs.scala-lang.org/overviews/parallel-collections/overview.html):
 
 > An effort to facilitate parallel programming by
-  *sparing users from low-level parallelization details*, meanwhile providing
+  **sparing users from low-level parallelization details**, meanwhile providing
   them with a familiar and simple high-level abstraction.
 
 > The hope was, and still is, that implicit parallelism behind
-  a high-level abstraction will bring *reliable parallel execution one step
-  closer to the workflow of mainstream developers*.
+  a high-level abstraction will bring **reliable parallel execution one step
+  closer to the workflow of mainstream developers**.
+
+Installation (keep on reading for examples):
+```bash
+$ pip install python-parallel
+```
 
 Here's a quick look at what you can achieve with `parallel`:
 

@@ -1,19 +1,47 @@
-`parallel`'s main goal is to make the process of parallelizing code transparent to us developers. For that, it offers 3 main functions (with their respective non-blocking versions):
+`parallel`'s main goal is to make the process of parallelizing code transparent to us developers. For that, it offers 2 main functions (with their respective non-blocking versions): `parallel.map` and `parallel.par`.
 
-#### `parallel.map`
+### `parallel.map`
 
 Used to spawn multiple executions of the same function with different parameters:
 
 ```python
-def download_and_store(url):
+def download_and_store(url, expected_code=200):
     resp = requests.get(url)
+    if resp.status_code != expected_code:
+        raise ValueError()
     result = store_in_db(resp.json())
     return result
 
 urls = ['https://python.org', 'https://rmotr.com', '...']
 
 results = parallel.map(download_and_store, urls)
+python_result = results[0]
 ```
+
+Multiple params can be passed just as sequences:
+
+```python
+urls = [
+    ('https://python.org', 204),
+    ('https://rmotr.com', 201),
+]
+
+results = parallel.map(download_and_store, urls)
+```
+
+And in dictionaries:
+
+```python
+urls = {
+    'python': ('https://python.org', 204),
+    'rmotr': ('https://rmotr.com', 201),
+}
+
+results = parallel.map(download_and_store, urls)
+python_result = results['python']
+```
+
+(more about parameters below)
 
 #### `parallel.par`
 
