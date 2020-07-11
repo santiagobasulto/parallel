@@ -85,15 +85,16 @@ Parallel is in very early stage. It's an effort to conceptualize the requirement
 
 Your comments and suggestions are greatly appreciated. If you think that any use case has been missing, or we should improve the API in any way, please [submit an issue](https://github.com/santiagobasulto/parallel/issues).
 
-Parallel is fairly well tested. To run those tests use:
+Parallel uses poetry:
 
 ```bash
-$ pip install -r dev-requirements.txt
-$ py.test -n 4 tests/
+$ poetry install
+$ poetry shell
+$ make test
 ```
 
-Documentation is written using Sphinx, the following command builds them live:
+Documentation is written using MKDocs, the following command builds them live:
 
 ```bash
-$ python docs/live_docs.py
+$ mkdocs serve
 ```
