@@ -1,0 +1,777 @@
+
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.5.1">
+    
+    
+      
+        <title>Quickstart - Parallel: Concurrency for humans</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/application.1b62728e.css">
+      
+        <link rel="stylesheet" href="../assets/stylesheets/application-palette.a8b3c06d.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="#546e7a">
+      
+    
+    
+      <script src="../assets/javascripts/modernizr.268332fc.js"></script>
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,400i,700|Ubuntu+Mono&display=fallback">
+        <style>body,input{font-family:"Ubuntu","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Ubuntu Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../assets/fonts/material-icons.css">
+    
+    
+    
+      
+    
+    
+  </head>
+  
+    
+    
+    <body dir="ltr" data-md-color-primary="blue-grey" data-md-color-accent="blue-grey">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#parallelmap" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href=".." title="Parallel: Concurrency for humans" class="md-header-nav__button md-logo">
+          
+            <i class="md-icon"></i>
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            <span class="md-header-nav__topic">
+              Parallel: Concurrency for humans
+            </span>
+            <span class="md-header-nav__topic">
+              
+                Quickstart
+              
+            </span>
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+          
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+        
+      </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main" role="main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href=".." title="Parallel: Concurrency for humans" class="md-nav__button md-logo">
+      
+        <i class="md-icon"></i>
+      
+    </a>
+    Parallel: Concurrency for humans
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href=".." title="Home" class="md-nav__link">
+      Home
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Quickstart
+      </label>
+    
+    <a href="./" title="Quickstart" class="md-nav__link md-nav__link--active">
+      Quickstart
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#parallelmap" class="md-nav__link">
+    parallel.map
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parallelpar" class="md-nav__link">
+    parallel.par
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#choosing-an-executor" class="md-nav__link">
+    Choosing an executor
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#decorating-functions" class="md-nav__link">
+    Decorating functions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parameters-for-ease-of-mind" class="md-nav__link">
+    Parameters for ease of mind
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sequences-or-dictionaries" class="md-nav__link">
+    Sequences or dictionaries
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#named-and-optional-parameters" class="md-nav__link">
+    Named and optional parameters
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#passing-multiple-arguments" class="md-nav__link">
+    Passing multiple arguments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#passing-named-parameters" class="md-nav__link">
+    Passing named parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#extras-to-avoid-repeating-yourself" class="md-nav__link">
+    Extras, to avoid repeating yourself
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-use-cases" class="md-nav__link">
+    Advanced use cases
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    Error Handling
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#parallelmap" class="md-nav__link">
+    parallel.map
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#parallelpar" class="md-nav__link">
+    parallel.par
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#choosing-an-executor" class="md-nav__link">
+    Choosing an executor
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#decorating-functions" class="md-nav__link">
+    Decorating functions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#parameters-for-ease-of-mind" class="md-nav__link">
+    Parameters for ease of mind
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#sequences-or-dictionaries" class="md-nav__link">
+    Sequences or dictionaries
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#named-and-optional-parameters" class="md-nav__link">
+    Named and optional parameters
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#passing-multiple-arguments" class="md-nav__link">
+    Passing multiple arguments
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#passing-named-parameters" class="md-nav__link">
+    Passing named parameters
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#extras-to-avoid-repeating-yourself" class="md-nav__link">
+    Extras, to avoid repeating yourself
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#advanced-use-cases" class="md-nav__link">
+    Advanced use cases
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#error-handling" class="md-nav__link">
+    Error Handling
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                  <h1>Quickstart</h1>
+                
+                <p><code>parallel</code>'s main goal is to make the process of parallelizing code transparent to us developers. For that, it offers 2 main functions (with their respective non-blocking versions): <code>parallel.map</code> and <code>parallel.par</code>.</p>
+<h3 id="parallelmap"><code>parallel.map</code></h3>
+<p>Used to spawn multiple executions of the same function with different parameters:</p>
+<div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">download_and_store</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">expected_code</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
+    <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">resp</span><span class="o">.</span><span class="n">status_code</span> <span class="o">!=</span> <span class="n">expected_code</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">()</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">store_in_db</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+<span class="n">urls</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;https://python.org&#39;</span><span class="p">,</span> <span class="s1">&#39;https://rmotr.com&#39;</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">]</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">download_and_store</span><span class="p">,</span> <span class="n">urls</span><span class="p">)</span>
+<span class="n">python_result</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+</pre></div>
+
+
+<p>Multiple params can be passed just as sequences:</p>
+<div class="codehilite"><pre><span></span><span class="n">urls</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s1">&#39;https://python.org&#39;</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;https://rmotr.com&#39;</span><span class="p">,</span> <span class="mi">201</span><span class="p">),</span>
+<span class="p">]</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">download_and_store</span><span class="p">,</span> <span class="n">urls</span><span class="p">)</span>
+</pre></div>
+
+
+<p>And in dictionaries:</p>
+<div class="codehilite"><pre><span></span><span class="n">urls</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;python&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;https://python.org&#39;</span><span class="p">,</span> <span class="mi">204</span><span class="p">),</span>
+    <span class="s1">&#39;rmotr&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;https://rmotr.com&#39;</span><span class="p">,</span> <span class="mi">201</span><span class="p">),</span>
+<span class="p">}</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">download_and_store</span><span class="p">,</span> <span class="n">urls</span><span class="p">)</span>
+<span class="n">python_result</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="s1">&#39;python&#39;</span><span class="p">]</span>
+</pre></div>
+
+
+<p>(more about parameters below)</p>
+<h4 id="parallelpar"><code>parallel.par</code></h4>
+<p>Used when you need to run different functions in parallel:</p>
+<div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">get_price_bitcoin</span><span class="p">(</span><span class="n">exchange</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="k">def</span> <span class="nf">get_price_ether</span><span class="p">(</span><span class="n">exchange</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="k">def</span> <span class="nf">get_price_ripple</span><span class="p">(</span><span class="n">exchange</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="n">prices</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">par</span><span class="p">({</span>
+        <span class="s1">&#39;btc&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">get_price_bitcoin</span><span class="p">,</span> <span class="s1">&#39;bitstamp&#39;</span><span class="p">)</span>
+        <span class="s1">&#39;eth&#39;</span><span class="p">:</span> <span class="n">parallel</span><span class="o">.</span><span class="n">future</span><span class="p">(</span><span class="n">get_price_ether</span><span class="p">,</span> <span class="n">exchange</span><span class="o">=</span><span class="s1">&#39;bitfinex&#39;</span><span class="p">),</span>
+        <span class="s1">&#39;xrp&#39;</span><span class="p">:</span> <span class="n">parallel</span><span class="o">.</span><span class="n">future</span><span class="p">(</span><span class="n">get_price_ripple</span><span class="p">,</span> <span class="s1">&#39;bitstamp&#39;</span><span class="p">),</span>
+    <span class="p">})</span>
+
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s1">&#39;index.html&#39;</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="p">{</span>
+        <span class="s1">&#39;prices&#39;</span><span class="p">:</span> <span class="n">prices</span>
+    <span class="p">})</span>
+</pre></div>
+
+
+<p>We'll keep using these same examples to explore all the features of <code>parallel</code>. For most parts, these will work in the same way for all <code>map</code>, <code>async_map</code>, <code>par</code> and <code>async_par</code>.</p>
+<h3 id="choosing-an-executor">Choosing an executor</h3>
+<p><code>parallel</code> can transparently provide multithreading or multiprocess execution for your code.</p>
+<div class="codehilite"><pre><span></span><span class="c1"># Multithreading:</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">download_and_store</span><span class="p">,</span> <span class="n">urls</span><span class="p">)</span>   <span class="c1"># Attribute</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">download_and_store</span><span class="p">,</span> <span class="n">urls</span><span class="p">,</span>
+                       <span class="n">executor</span><span class="o">=</span><span class="n">parallel</span><span class="o">.</span><span class="n">THREAD_EXECUTOR</span><span class="p">)</span> <span class="c1"># Parameter</span>
+
+<span class="c1"># Multiprocessing:</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">download_and_store</span><span class="p">,</span> <span class="n">urls</span><span class="p">)</span>   <span class="c1"># Attribute</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">download_and_store</span><span class="p">,</span> <span class="n">urls</span><span class="p">,</span>
+                       <span class="n">executor</span><span class="o">=</span><span class="n">parallel</span><span class="o">.</span><span class="n">PROCESS_EXECUTOR</span><span class="p">)</span> <span class="c1"># Parameter</span>
+</pre></div>
+
+
+<p>Parameters for executors can be passed directly (similar to <code>concurrent.futures</code>):</p>
+<div class="codehilite"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+    <span class="n">download_and_store</span><span class="p">,</span> <span class="n">urls</span><span class="p">,</span>
+    <span class="n">executor</span><span class="o">=</span><span class="n">parallel</span><span class="o">.</span><span class="n">THREAD_EXECUTOR</span><span class="p">,</span>
+    <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">max_workers</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+
+
+<h3 id="decorating-functions">Decorating functions</h3>
+<p>If you rely on parallel tasks in a constant basis, you can choose to decorate the function to make it easier for later:</p>
+<div class="codehilite"><pre><span></span><span class="nd">@parallel</span><span class="o">.</span><span class="n">decorate</span>
+<span class="k">def</span> <span class="nf">download_and_store</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">urls</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;https://python.org&#39;</span><span class="p">,</span> <span class="s1">&#39;https://rmotr.com&#39;</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">]</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">download_and_store</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">urls</span><span class="p">)</span>  <span class="c1"># Use the function as a handler</span>
+</pre></div>
+
+
+<p>Executors and parameters all work in the same way:</p>
+<div class="codehilite"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">download_and_store</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">urls</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">max_workers</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">download_and_store</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">urls</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">max_workers</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+
+
+<p>For <code>parallel.par</code>, the advantage of decorating functions is the easy passage of parameters:</p>
+<div class="codehilite"><pre><span></span><span class="nd">@parallel</span><span class="o">.</span><span class="n">decorate</span>
+<span class="k">def</span> <span class="nf">get_price_bitcoin</span><span class="p">(</span><span class="n">exchange</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="nd">@parallel</span><span class="o">.</span><span class="n">decorate</span>
+<span class="k">def</span> <span class="nf">get_price_ether</span><span class="p">(</span><span class="n">exchange</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">prices</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">par</span><span class="p">({</span>
+    <span class="s1">&#39;btc&#39;</span><span class="p">:</span> <span class="n">get_price_bitcoin</span><span class="o">.</span><span class="n">future</span><span class="p">(</span><span class="s1">&#39;bitstamp&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;eth&#39;</span><span class="p">:</span> <span class="n">get_price_ether</span><span class="o">.</span><span class="n">future</span><span class="p">(</span><span class="n">exchange</span><span class="o">=</span><span class="s1">&#39;bitfinex&#39;</span><span class="p">),</span>
+<span class="p">})</span>
+</pre></div>
+
+
+<p>Any decorated function can still be used normally, the decorator only adds the <code>parallel</code> attributes:</p>
+<div class="codehilite"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">download_and_store</span><span class="p">(</span><span class="s1">&#39;https://python.org&#39;</span><span class="p">)</span>
+<span class="n">btc</span> <span class="o">=</span> <span class="n">get_price_bitcoin</span><span class="p">(</span><span class="s1">&#39;bitstamp&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<h2 id="parameters-for-ease-of-mind">Parameters for ease of mind</h2>
+<p>One of the biggest limitations with <code>concurrent.futures</code> is the passage of parameters. <code>parallel</code> resolves all those issues and even incorporates some good ideas to simplify your work:</p>
+<h3 id="sequences-or-dictionaries">Sequences or dictionaries</h3>
+<p>Do you prefer to see results in a sequential manner, or in a <em>named</em> one? Either can be used:</p>
+<div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">download_and_store</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="c1"># Sequential:</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">download_and_store</span><span class="p">,</span> <span class="p">[</span>
+    <span class="s1">&#39;https://python.org&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;https://rmotr.com&#39;</span>
+<span class="p">])</span>
+<span class="n">results</span> <span class="o">==</span> <span class="p">[</span><span class="s1">&#39;python.org results&#39;</span><span class="p">,</span> <span class="s1">&#39;rmotr.com results&#39;</span><span class="p">]</span>
+
+<span class="c1"># Named (with a dictionary):</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">download_and_store</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s1">&#39;python&#39;</span><span class="p">:</span> <span class="s1">&#39;https://python.org&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;rmotr&#39;</span><span class="p">:</span> <span class="s1">&#39;https://rmotr.com&#39;</span>
+<span class="p">})</span>
+<span class="n">results</span> <span class="o">==</span> <span class="p">{</span>
+    <span class="s1">&#39;python&#39;</span><span class="p">:</span> <span class="s1">&#39;python.org results&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;rmotr&#39;</span><span class="p">:</span> <span class="s1">&#39;rmotr.com results&#39;</span>
+<span class="p">}</span>
+</pre></div>
+
+
+<h3 id="named-and-optional-parameters">Named and optional parameters</h3>
+<p>When functions get more advanced, or invocations vary dynamically, <code>concurrent.futures</code> is more limited. <code>parallel</code> works with all the use cases that you might encounter. Consider the following function as an example:</p>
+<div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">download_and_store</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">content_type</span><span class="p">,</span> <span class="n">db_table</span><span class="o">=</span><span class="s1">&#39;websites&#39;</span><span class="p">,</span> <span class="n">log_level</span><span class="o">=</span><span class="s1">&#39;info&#39;</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="c1"># ... some code ...</span>
+    <span class="k">pass</span>
+</pre></div>
+
+
+<h5 id="passing-multiple-arguments">Passing multiple arguments</h5>
+<p>In its simplest form, passing multiple ordered arguments works just by passing the parameters in a sequence:</p>
+<div class="codehilite"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">download_and_store</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s1">&#39;https://python.org&#39;</span><span class="p">,</span> <span class="s1">&#39;json&#39;</span><span class="p">),</span>  <span class="c1"># download_and_store(&#39;https://python.org&#39;, &#39;json&#39;)</span>
+    <span class="p">(</span><span class="s1">&#39;https://rmotr.com&#39;</span><span class="p">,</span> <span class="s1">&#39;xml&#39;</span><span class="p">)</span>     <span class="c1"># download_and_store(&#39;https://rmotr.com&#39;, &#39;xml&#39;)</span>
+<span class="p">])</span>
+</pre></div>
+
+
+<h5 id="passing-named-parameters">Passing named parameters</h5>
+<p>To pass named parameters, just use a dictionary inside the parameter's sequence:</p>
+<div class="codehilite"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">download_and_store</span><span class="p">,</span> <span class="p">[</span>
+    <span class="c1"># download_and_store(&#39;https://python.org&#39;, &#39;json&#39;, db_table=&#39;webpages&#39;)</span>
+    <span class="p">(</span><span class="s1">&#39;https://python.org&#39;</span><span class="p">,</span> <span class="s1">&#39;json&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;db_table&#39;</span><span class="p">:</span> <span class="s1">&#39;webpages&#39;</span><span class="p">}),</span>
+
+    <span class="c1"># download_and_store(&#39;https://rmotr.com&#39;, &#39;xml&#39;, db_table=&#39;debug&#39;)</span>
+    <span class="p">(</span><span class="s1">&#39;https://rmotr.com&#39;</span><span class="p">,</span> <span class="s1">&#39;xml&#39;</span><span class="p">,</span> <span class="p">{</span><span class="s1">&#39;log_level&#39;</span><span class="p">:</span> <span class="s1">&#39;debug&#39;</span><span class="p">})</span>
+<span class="p">])</span>
+</pre></div>
+
+
+<h3 id="extras-to-avoid-repeating-yourself">Extras, to avoid repeating yourself</h3>
+<p>Instead of passing the same named parameter over and over again, pass it as an <em>extra</em>:</p>
+<div class="codehilite"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">download_and_store</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">(</span><span class="s1">&#39;https://python.org&#39;</span><span class="p">,</span> <span class="s1">&#39;json&#39;</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;https://rmotr.com&#39;</span><span class="p">,</span> <span class="s1">&#39;xml&#39;</span><span class="p">)</span>
+<span class="p">],</span> <span class="n">extras</span><span class="o">=</span><span class="p">{</span>
+    <span class="s1">&#39;db_table&#39;</span><span class="p">:</span> <span class="s1">&#39;temporary_webpages&#39;</span>
+<span class="p">})</span>
+</pre></div>
+
+
+<p>In this example, all the URLs will be stored in <code>temporary_webpages</code>.</p>
+<h3 id="advanced-use-cases">Advanced use cases</h3>
+<p>When faced with very extreme scenarios of function invocation, you can resort back to <code>parallel.arg</code>. For example, if your function receives a dictionary as parameter, <code>parallel</code> by default will interpret it as a named parameter. To avoid that, just use <code>parallel.arg</code>:</p>
+<div class="codehilite"><pre><span></span><span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">download_and_store</span><span class="p">,</span> <span class="p">{</span>
+    <span class="s1">&#39;python&#39;</span><span class="p">:</span> <span class="n">parallel</span><span class="o">.</span><span class="n">arg</span><span class="p">(</span><span class="s1">&#39;https://python.org&#39;</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">}),</span>
+    <span class="s1">&#39;rmotr&#39;</span><span class="p">:</span> <span class="s1">&#39;https://rmotr.com&#39;</span>
+<span class="p">})</span>
+</pre></div>
+
+
+<p>For <code>parallel.par</code>, you can use <code>parallel.future</code>:</p>
+<div class="codehilite"><pre><span></span><span class="n">prices</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">par</span><span class="p">({</span>
+    <span class="s1">&#39;btc&#39;</span><span class="p">:</span> <span class="n">parallel</span><span class="o">.</span><span class="n">future</span><span class="p">(</span><span class="n">get_price_bitcoin</span><span class="p">,</span> <span class="n">exchange</span><span class="o">=</span><span class="s1">&#39;bitstamp&#39;</span><span class="p">)</span>
+    <span class="s1">&#39;eth&#39;</span><span class="p">:</span> <span class="n">parallel</span><span class="o">.</span><span class="n">future</span><span class="p">(</span><span class="n">get_price_ether</span><span class="p">,</span> <span class="s1">&#39;bitfinex&#39;</span><span class="p">,</span>
+                           <span class="n">options</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;Content-Type&#39;</span><span class="p">:</span> <span class="s1">&#39;application/json&#39;</span><span class="p">}),</span>
+<span class="p">})</span>
+</pre></div>
+
+
+<h2 id="error-handling">Error Handling</h2>
+<p>By default, if a function raises an exception, <code>parallel</code> will propagate it, this is the expected behavior. But <code>parallel</code> also includes error handling capabilities. By using the <code>silent</code> argument, you can <em>silence</em> exceptions and access the details of the failed tasks afterwards (including the exception raised).</p>
+<div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">add</span><span class="p">,</span> <span class="p">[</span>
+    <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+    <span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>  <span class="c1"># will fail</span>
+    <span class="p">(</span><span class="s1">&#39;hello &#39;</span><span class="p">,</span> <span class="s1">&#39;world&#39;</span><span class="p">)</span>
+<span class="p">],</span> <span class="n">silent</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">results</span><span class="o">.</span><span class="n">failures</span><span class="p">)</span>
+<span class="c1"># True (there are failed tasks)</span>
+
+<span class="n">r1</span><span class="p">,</span> <span class="n">r2</span><span class="p">,</span> <span class="n">r3</span> <span class="o">=</span> <span class="n">results</span>
+<span class="k">assert</span> <span class="n">r1</span> <span class="o">==</span> <span class="mi">5</span>
+<span class="k">assert</span> <span class="n">r3</span> <span class="o">==</span> <span class="s1">&#39;hello world&#39;</span>
+
+<span class="k">assert</span> <span class="n">r2</span> <span class="o">==</span> <span class="n">parallel</span><span class="o">.</span><span class="n">FailedTask</span><span class="p">(</span>
+    <span class="n">params</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span>
+    <span class="n">ex</span><span class="o">=</span><span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;unsupported operand type(s) for +: &#39;</span><span class="nb">int</span><span class="s1">&#39; and &#39;</span><span class="nb">str</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+<span class="p">)</span>
+
+<span class="c1"># Read below for more info on `replace_failed`</span>
+<span class="k">assert</span> <span class="n">results</span><span class="o">.</span><span class="n">replace_failed</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span> <span class="o">==</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="s1">&#39;hello world&#39;</span><span class="p">]</span>
+</pre></div>
+
+
+<p>The <code>parallel.FailedTask</code> model includes information of the failed tasks, including the arguments (both sequential and named) passed.</p>
+<p>What <code>map</code>, <code>par</code> and other methods return is an instance of the <code>parallel.BaseResult</code> class. These results include a few convenient methods:</p>
+<ul>
+<li><code>results.failures</code> (<em>Boolean</em>): <code>True</code> if there were any tasks that failed with an exception.</li>
+<li><code>results.failed</code> (<em>List</em>): A list of all the failed tasks.</li>
+<li><code>results.succeeded</code> (<em>List</em>): A list of all the successful tasks.</li>
+<li><code>results.replace_failed</code>: Receives a value to use for replacement of all the failed tasks.</li>
+</ul>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href=".." title="Home" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Home
+              </span>
+            </div>
+          </a>
+        
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        powered by
+        <a href="https://www.mkdocs.org">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/">
+          Material for MkDocs</a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../assets/javascripts/application.8e03edeb.js"></script>
+      
+      <script>app.initialize({version:"1.0.4",url:{base:".."}})</script>
+      
+    
+  </body>
+</html>

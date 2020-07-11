@@ -1,0 +1,434 @@
+
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-4.5.1">
+    
+    
+      
+        <title>Parallel: Concurrency for humans</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/application.1b62728e.css">
+      
+        <link rel="stylesheet" href="assets/stylesheets/application-palette.a8b3c06d.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="#546e7a">
+      
+    
+    
+      <script src="assets/javascripts/modernizr.268332fc.js"></script>
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,400i,700|Ubuntu+Mono&display=fallback">
+        <style>body,input{font-family:"Ubuntu","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Ubuntu Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="assets/fonts/material-icons.css">
+    
+    
+    
+      
+    
+    
+  </head>
+  
+    
+    
+    <body dir="ltr" data-md-color-primary="blue-grey" data-md-color-accent="blue-grey">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#next-steps" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="." title="Parallel: Concurrency for humans" class="md-header-nav__button md-logo">
+          
+            <i class="md-icon"></i>
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            <span class="md-header-nav__topic">
+              Parallel: Concurrency for humans
+            </span>
+            <span class="md-header-nav__topic">
+              
+                Home
+              
+            </span>
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+          
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+        
+      </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main" role="main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="." title="Parallel: Concurrency for humans" class="md-nav__button md-logo">
+      
+        <i class="md-icon"></i>
+      
+    </a>
+    Parallel: Concurrency for humans
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Home
+      </label>
+    
+    <a href="." title="Home" class="md-nav__link md-nav__link--active">
+      Home
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    Next steps
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="quickstart/" title="Quickstart" class="md-nav__link">
+      Quickstart
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#next-steps" class="md-nav__link">
+    Next steps
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                  <h1>Home</h1>
+                
+                <p><code>parallel</code> makes the process of writing parallel code simple and enjoyable, bringing parallelism <strong>closer to mainstream developers</strong>. <code>parallel</code> is <strong>NOT</strong> a pipeline library (check <a href="https://dask.org/">Dask</a> or
+<a href="https://github.com/spotify/luigi">Luigi</a> for that).</p>
+<p><code>parallel</code> is inspired (and perfectly summarized) by
+<a href="https://docs.scala-lang.org/overviews/parallel-collections/overview.html">Scala's parallel collections</a>:</p>
+<blockquote>
+<p>An effort to facilitate parallel programming by
+  <strong>sparing users from low-level parallelization details</strong>, meanwhile providing
+  them with a familiar and simple high-level abstraction.</p>
+<p>The hope was, and still is, that implicit parallelism behind
+  a high-level abstraction will bring <strong>reliable parallel execution one step
+  closer to the workflow of mainstream developers</strong>.</p>
+</blockquote>
+<p>Installation (keep on reading for examples):</p>
+<div class="codehilite"><pre><span></span>$ pip install python-parallel
+</pre></div>
+
+
+<p>Here's a quick look at what you can achieve with <code>parallel</code>:</p>
+<div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">download_and_store</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="n">store_in_db</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+    <span class="k">return</span> <span class="n">result</span>
+
+<span class="n">urls</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;https://python.org&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;https://python-requests.com&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;https://rmotr.com&#39;</span>
+<span class="p">]</span>
+
+<span class="c1"># instant parallelism (Threads used by default)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+    <span class="n">download_and_store</span><span class="p">,</span>  <span class="c1"># the function to invoke</span>
+    <span class="n">urls</span><span class="p">,</span>                <span class="c1"># parameters to parallelize</span>
+    <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>           <span class="c1"># timeout per thread</span>
+    <span class="n">max_workers</span><span class="o">=</span><span class="mi">4</span>        <span class="c1"># max threads</span>
+<span class="p">)</span>
+
+<span class="c1"># results are ordered and are logically organized as you&#39;d expect</span>
+<span class="n">results</span> <span class="o">==</span> <span class="p">[</span>
+    <span class="s1">&#39;https://python.org&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;https://python-requests.com&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;https://rmotr.com&#39;</span><span class="p">]</span>
+</pre></div>
+
+
+<p><code>parallel</code> is designed to transparently provide support for multithreading and multiprocessing. Switch between executors with just an argument:</p>
+<div class="codehilite"><pre><span></span><span class="c1"># Using multi-threading</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">thread</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">download_and_store</span><span class="p">,</span> <span class="n">urls</span><span class="p">)</span>
+
+<span class="c1"># Using multi-processing</span>
+<span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">process</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">download_and_store</span><span class="p">,</span> <span class="n">urls</span><span class="p">)</span>
+</pre></div>
+
+
+<p>If a certain function needs recurrent parallelization, you can choose to decorate it:</p>
+<div class="codehilite"><pre><span></span><span class="nd">@parallel</span><span class="o">.</span><span class="n">decorate</span>
+<span class="k">def</span> <span class="nf">download_and_store</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="c1"># ...</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">download_and_store</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>  <span class="c1"># parallelize the function directly</span>
+    <span class="n">urls</span><span class="p">,</span>                          <span class="c1"># parameters to parallelize</span>
+    <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>                     <span class="c1"># timeout per thread</span>
+    <span class="n">max_workers</span><span class="o">=</span><span class="mi">4</span>                  <span class="c1"># max threads</span>
+<span class="p">)</span>
+</pre></div>
+
+
+<p>and the function can still be used normally:</p>
+<div class="codehilite"><pre><span></span><span class="n">res</span> <span class="o">=</span> <span class="n">download_and_store</span><span class="p">(</span><span class="s1">&#39;https://rmotr.com&#39;</span><span class="p">)</span>
+</pre></div>
+
+
+<p>All the functionality of <code>parallel</code> is presented with a blocking version (default) and non-blocking one:</p>
+<div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">download_and_store</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">urls</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;https://python&#39;</span><span class="p">,</span> <span class="s1">&#39;https://rmotr.com&#39;</span><span class="p">,</span> <span class="s1">&#39;...&#39;</span><span class="p">]</span>
+
+<span class="c1"># instant parallelism (Threads used by default)</span>
+<span class="k">with</span> <span class="n">parallel</span><span class="o">.</span><span class="n">async_map</span><span class="p">(</span><span class="n">download_and_store</span><span class="p">,</span> <span class="n">urls</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+    <span class="c1"># do something else while parallel processes</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">read_data</span><span class="p">()</span>
+    <span class="c1"># access results when needed (this might block)</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="n">ex</span><span class="o">.</span><span class="n">results</span><span class="p">()</span>
+
+<span class="c1"># resources are cleaned up when the context manager exits</span>
+</pre></div>
+
+
+<div class="admonition note">
+<p class="admonition-title">Blocking vs Non-blocking</p>
+<p>Please don't confuse non-blocking with <em>asynchronous</em> execution (provided by the <code>async</code> module).
+Non blocking in this context means that your threads (or processes) are executed in the background,
+and you can keep working in the main thread meanwhile.</p>
+</div>
+<h3 id="next-steps">Next steps</h3>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+        
+          <a href="quickstart/" title="Quickstart" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Quickstart
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        powered by
+        <a href="https://www.mkdocs.org">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/">
+          Material for MkDocs</a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="assets/javascripts/application.8e03edeb.js"></script>
+      
+      <script>app.initialize({version:"1.0.4",url:{base:"."}})</script>
+      
+    
+  </body>
+</html>
