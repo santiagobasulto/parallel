@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-  <a href="https://python-parallel.readthedocs.io/en/latest/"><img src="https://user-images.githubusercontent.com/872296/76652584-44ce4280-653d-11ea-8b8c-5e33939f1762.png" alt="Python Parallel" width="200"></a>
+  <a href="https://santiagobasulto.github.io/parallel/"><img src="https://user-images.githubusercontent.com/872296/76652584-44ce4280-653d-11ea-8b8c-5e33939f1762.png" alt="Python Parallel" width="200"></a>
   <br>
   Parallel
   <br>
@@ -47,7 +47,7 @@ There are more features to `parallel`:
 * Automatic retries
 * Choose between multithreading and multiprocessing with a simple attribute `thread` & `process`.
 
-Check the docs at [https://python-parallel.readthedocs.io/en/latest/](https://python-parallel.readthedocs.io/en/latest/).
+Check the docs at [https://santiagobasulto.github.io/parallel/](https://santiagobasulto.github.io/parallel/).
 
 ## Quick Docs
 
