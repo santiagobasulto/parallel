@@ -64,7 +64,7 @@ class ParallelJob:
             return (params,), normalized_kwargs
         if isinstance(params, dict):
             return tuple(), {**normalized_kwargs, **params}
-        if not isinstance(params, collections.abc.Sequence):
+        if not any([isinstance(params, list), isinstance(params, tuple)]):
             return (params,), normalized_kwargs
         for param in params:
             if isinstance(param, dict):

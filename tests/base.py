@@ -19,7 +19,10 @@ __all__ = [
 
     'TestingException'
 ]
+
 class TestingException(Exception):
+    __test__ = False
+
     def __eq__(self, other):
         return type(self) == type(other) and self.args == other.args
 

@@ -14,6 +14,20 @@ def test_map_sequence_basic_single_param():
     results = parallel.map(sleep_return_single_param, [.2, .3, .1])
     assert results == ['0.2', '0.3', '0.1']
 
+
+def download_and_return(url):
+    return url.upper()
+
+def test_map_sequence_basic_single_param_str():
+    results = parallel.map(download_and_return, [
+        'https://python.org',
+        'https://python.com',
+    ])
+    assert results == [
+        'HTTPS://PYTHON.ORG',
+        'HTTPS://PYTHON.COM',
+    ]
+
 #######################
 # Multiple parameters #
 #######################

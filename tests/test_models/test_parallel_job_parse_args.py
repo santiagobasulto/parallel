@@ -25,6 +25,17 @@ def test_simple_params():
     args = ParallelJob.build_for_callable_from_params(mocked_fn, [2, 3])
     assert args == expected
 
+
+    expected = [
+        ParallelJob(mocked_fn, args=('https://python.org', )),
+        ParallelJob(mocked_fn, args=('https://djangoproject.org', )),
+    ]
+    args = ParallelJob.build_for_callable_from_params(
+        mocked_fn, [
+            'https://python.org',
+            'https://djangoproject.org'])
+    assert args == expected
+
     expected = [
         ParallelJob(mocked_fn, name='a', args=(2, )),
         ParallelJob(mocked_fn, name='b', args=(3, )),
