@@ -22,7 +22,7 @@ from .models import (
 # __all__ = ["decorate", "arg", "future", "map", "async_map", "par", "async_par"]
 __all__ = ["map", "async_map", "par", "async_par"]
 
-__version__ = "0.0.2"
+__version__ = "0.9.1"
 __author__ = "Santiago Basulto <santiago.basulto@gmail.com>"
 
 

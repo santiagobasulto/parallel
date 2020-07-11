@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "python-parallel"
-version = "0.9.0"
+version = "0.9.1"
 description = "Simple parallelism for the everyday developers"
 authors = ["Santiago Basulto <santiago.basulto@gmail.com>"]
 license = "MIT"
