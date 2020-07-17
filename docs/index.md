@@ -1,3 +1,8 @@
+---
+title: "Intro to Parallel"
+summary: A Python library for instant parallelism in concurrency.
+---
+
 `parallel` makes the process of writing parallel code simple and enjoyable, bringing parallelism **closer to mainstream developers**. `parallel` is **NOT** a pipeline library (check [Dask](https://dask.org/) or
 [Luigi](https://github.com/spotify/luigi) for that).
 
@@ -16,6 +21,14 @@ Installation (keep on reading for examples):
 ```bash
 $ pip install python-parallel
 ```
+
+`parallel` makes it extremely simple to parallelize functions with features like:
+
+* Multi Threading and Multi Processing support
+* `*args`, `**kwargs`, default arguments and extras
+* Error handling and silencing
+* Automatic retries
+* Non-blocking API
 
 Here's a quick look at what you can achieve with `parallel`:
 
@@ -99,4 +112,22 @@ with parallel.async_map(download_and_store, urls, timeout=5) as ex:
     Non blocking in this context means that your threads (or processes) are executed in the background,
     and you can keep working in the main thread meanwhile.
 
+If you have multiple **different** functions that can be parallelized, you can use the `parallel.par` function:
+
+```python
+def fetch_album_info(album): ...
+def fetch_artist_info(artist): ...
+def fetch_song_list(album, prefetch_mp3=False, page_size=None): ...
+
+results = parallel.par({
+    'album': (fetch_album_info, 'Are You Experienced')
+    'artist': parallel.future(fetch_artist_info, artist='Jimi Hendrix'),
+    'songs': parallel.future(fetch_song_list, 'Are You Experienced', page_size=10),
+})
+
+results['songs']
+```
+
 ### Next steps
+
+Check out the [Quickstart](quickstart.md) for more examples. If you want to contribute, please head for the [Github repo](https://github.com/santiagobasulto/parallel) or [submit an issue](https://github.com/santiagobasulto/parallel/issues/new).

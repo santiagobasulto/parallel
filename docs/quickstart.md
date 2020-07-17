@@ -1,4 +1,11 @@
-`parallel`'s main goal is to make the process of parallelizing code transparent to us developers. For that, it offers 2 main functions (with their respective non-blocking versions): `parallel.map` and `parallel.par`.
+---
+title: "Quickstart and Examples"
+---
+
+`parallel`'s main goal is to make the process of parallelizing code transparent to us developers. For that, it offers 2 main functions (with their respective non-blocking versions):
+
+* `parallel.map`: to parallelize the same function with multiple arguments.
+* `parallel.par`: to spawn different functions.
 
 ### `parallel.map`
 

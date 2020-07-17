@@ -1,4 +1,4 @@
-site_name: "Parallel: Concurrency for humans"
+site_name: "Parallel: Concurrency without headaches"
 theme:
   name: 'material'
   palette:
@@ -12,3 +12,7 @@ markdown_extensions:
   - admonition
   - codehilite
   - footnotes
+
+# nav:
+#   - 'Parallel': 'index.md'
+#   - 'Quickstart': 'quickstart.md'
