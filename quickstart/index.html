@@ -36,7 +36,7 @@
     
     
       
-        <title>Quickstart - Parallel: Concurrency for humans</title>
+        <title>Quickstart and Examples</title>
       
     
     
@@ -92,7 +92,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href=".." title="Parallel: Concurrency for humans" class="md-header-nav__button md-logo">
+        <a href=".." title="Parallel: Concurrency without headaches" class="md-header-nav__button md-logo">
           
             <i class="md-icon"></i>
           
@@ -105,11 +105,11 @@
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
           
             <span class="md-header-nav__topic">
-              Parallel: Concurrency for humans
+              Parallel: Concurrency without headaches
             </span>
             <span class="md-header-nav__topic">
               
-                Quickstart
+                Quickstart and Examples
               
             </span>
           
@@ -162,12 +162,12 @@
                   <div class="md-sidebar__inner">
                     <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href=".." title="Parallel: Concurrency for humans" class="md-nav__button md-logo">
+    <a href=".." title="Parallel: Concurrency without headaches" class="md-nav__button md-logo">
       
         <i class="md-icon"></i>
       
     </a>
-    Parallel: Concurrency for humans
+    Parallel: Concurrency without headaches
   </label>
   
   <ul class="md-nav__list" data-md-scrollfix>
@@ -178,8 +178,8 @@
 
 
   <li class="md-nav__item">
-    <a href=".." title="Home" class="md-nav__link">
-      Home
+    <a href=".." title="Intro to Parallel" class="md-nav__link">
+      Intro to Parallel
     </a>
   </li>
 
@@ -197,11 +197,11 @@
     
     
       <label class="md-nav__link md-nav__link--active" for="__toc">
-        Quickstart
+        Quickstart and Examples
       </label>
     
-    <a href="./" title="Quickstart" class="md-nav__link md-nav__link--active">
-      Quickstart
+    <a href="./" title="Quickstart and Examples" class="md-nav__link md-nav__link--active">
+      Quickstart and Examples
     </a>
     
       
@@ -462,9 +462,13 @@
               
                 
                 
-                  <h1>Quickstart</h1>
+                  <h1>Quickstart and Examples</h1>
                 
-                <p><code>parallel</code>'s main goal is to make the process of parallelizing code transparent to us developers. For that, it offers 2 main functions (with their respective non-blocking versions): <code>parallel.map</code> and <code>parallel.par</code>.</p>
+                <p><code>parallel</code>'s main goal is to make the process of parallelizing code transparent to us developers. For that, it offers 2 main functions (with their respective non-blocking versions):</p>
+<ul>
+<li><code>parallel.map</code>: to parallelize the same function with multiple arguments.</li>
+<li><code>parallel.par</code>: to spawn different functions.</li>
+</ul>
 <h3 id="parallelmap"><code>parallel.map</code></h3>
 <p>Used to spawn multiple executions of the same function with different parameters:</p>
 <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">download_and_store</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">expected_code</span><span class="o">=</span><span class="mi">200</span><span class="p">):</span>
@@ -733,7 +737,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href=".." title="Home" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href=".." title="Intro to Parallel" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -742,7 +746,7 @@
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Home
+                Intro to Parallel
               </span>
             </div>
           </a>

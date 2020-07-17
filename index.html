@@ -36,7 +36,7 @@
     
     
       
-        <title>Parallel: Concurrency for humans</title>
+        <title>Intro to Parallel</title>
       
     
     
@@ -92,7 +92,7 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="." title="Parallel: Concurrency for humans" class="md-header-nav__button md-logo">
+        <a href="." title="Parallel: Concurrency without headaches" class="md-header-nav__button md-logo">
           
             <i class="md-icon"></i>
           
@@ -105,11 +105,11 @@
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
           
             <span class="md-header-nav__topic">
-              Parallel: Concurrency for humans
+              Parallel: Concurrency without headaches
             </span>
             <span class="md-header-nav__topic">
               
-                Home
+                Intro to Parallel
               
             </span>
           
@@ -162,12 +162,12 @@
                   <div class="md-sidebar__inner">
                     <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="." title="Parallel: Concurrency for humans" class="md-nav__button md-logo">
+    <a href="." title="Parallel: Concurrency without headaches" class="md-nav__button md-logo">
       
         <i class="md-icon"></i>
       
     </a>
-    Parallel: Concurrency for humans
+    Parallel: Concurrency without headaches
   </label>
   
   <ul class="md-nav__list" data-md-scrollfix>
@@ -185,11 +185,11 @@
     
     
       <label class="md-nav__link md-nav__link--active" for="__toc">
-        Home
+        Intro to Parallel
       </label>
     
-    <a href="." title="Home" class="md-nav__link md-nav__link--active">
-      Home
+    <a href="." title="Intro to Parallel" class="md-nav__link md-nav__link--active">
+      Intro to Parallel
     </a>
     
       
@@ -224,8 +224,8 @@
 
 
   <li class="md-nav__item">
-    <a href="quickstart/" title="Quickstart" class="md-nav__link">
-      Quickstart
+    <a href="quickstart/" title="Quickstart and Examples" class="md-nav__link">
+      Quickstart and Examples
     </a>
   </li>
 
@@ -272,7 +272,7 @@
               
                 
                 
-                  <h1>Home</h1>
+                  <h1>Intro to Parallel</h1>
                 
                 <p><code>parallel</code> makes the process of writing parallel code simple and enjoyable, bringing parallelism <strong>closer to mainstream developers</strong>. <code>parallel</code> is <strong>NOT</strong> a pipeline library (check <a href="https://dask.org/">Dask</a> or
 <a href="https://github.com/spotify/luigi">Luigi</a> for that).</p>
@@ -291,6 +291,14 @@
 </pre></div>
 
 
+<p><code>parallel</code> makes it extremely simple to parallelize functions with features like:</p>
+<ul>
+<li>Multi Threading and Multi Processing support</li>
+<li><code>*args</code>, <code>**kwargs</code>, default arguments and extras</li>
+<li>Error handling and silencing</li>
+<li>Automatic retries</li>
+<li>Non-blocking API</li>
+</ul>
 <p>Here's a quick look at what you can achieve with <code>parallel</code>:</p>
 <div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">download_and_store</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
     <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
@@ -369,7 +377,23 @@
 Non blocking in this context means that your threads (or processes) are executed in the background,
 and you can keep working in the main thread meanwhile.</p>
 </div>
+<p>If you have multiple <strong>different</strong> functions that can be parallelized, you can use the <code>parallel.par</code> function:</p>
+<div class="codehilite"><pre><span></span><span class="k">def</span> <span class="nf">fetch_album_info</span><span class="p">(</span><span class="n">album</span><span class="p">):</span> <span class="o">...</span>
+<span class="k">def</span> <span class="nf">fetch_artist_info</span><span class="p">(</span><span class="n">artist</span><span class="p">):</span> <span class="o">...</span>
+<span class="k">def</span> <span class="nf">fetch_song_list</span><span class="p">(</span><span class="n">album</span><span class="p">,</span> <span class="n">prefetch_mp3</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">page_size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span> <span class="o">...</span>
+
+<span class="n">results</span> <span class="o">=</span> <span class="n">parallel</span><span class="o">.</span><span class="n">par</span><span class="p">({</span>
+    <span class="s1">&#39;album&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">fetch_album_info</span><span class="p">,</span> <span class="s1">&#39;Are You Experienced&#39;</span><span class="p">)</span>
+    <span class="s1">&#39;artist&#39;</span><span class="p">:</span> <span class="n">parallel</span><span class="o">.</span><span class="n">future</span><span class="p">(</span><span class="n">fetch_artist_info</span><span class="p">,</span> <span class="n">artist</span><span class="o">=</span><span class="s1">&#39;Jimi Hendrix&#39;</span><span class="p">),</span>
+    <span class="s1">&#39;songs&#39;</span><span class="p">:</span> <span class="n">parallel</span><span class="o">.</span><span class="n">future</span><span class="p">(</span><span class="n">fetch_song_list</span><span class="p">,</span> <span class="s1">&#39;Are You Experienced&#39;</span><span class="p">,</span> <span class="n">page_size</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
+<span class="p">})</span>
+
+<span class="n">results</span><span class="p">[</span><span class="s1">&#39;songs&#39;</span><span class="p">]</span>
+</pre></div>
+
+
 <h3 id="next-steps">Next steps</h3>
+<p>Check out the <a href="quickstart/">Quickstart</a> for more examples. If you want to contribute, please head for the <a href="https://github.com/santiagobasulto/parallel">Github repo</a> or <a href="https://github.com/santiagobasulto/parallel/issues/new">submit an issue</a>.</p>
                 
                   
                 
@@ -391,13 +415,13 @@ and you can keep working in the main thread meanwhile.</p>
       <nav class="md-footer-nav__inner md-grid">
         
         
-          <a href="quickstart/" title="Quickstart" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="quickstart/" title="Quickstart and Examples" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Quickstart
+                Quickstart and Examples
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">
